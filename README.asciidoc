@@ -1,0 +1,23 @@
+Description
+-----------
+
+A webservice with an sqlite backend to search juridical information.
+
+Usage
+-----
+
+plackup -I ./lib -p 9999
+
+enter a date on http://localhost:9999/
+
+Dependancies
+------------
+- Plackup
+- SQLite
+
+cpanm -S <Module::Name>
+
+Copyright & License
+-------------------
+
+AGPL license (c) 2011 - iRail vzw/asbl
