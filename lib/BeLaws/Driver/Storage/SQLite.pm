@@ -20,7 +20,8 @@ sub new {
     my $count = $dbh->selectcol_arrayref('SELECT name FROM sqlite_master WHERE name = ?',undef,$attr{table});
     if(scalar @$count == 0) {
         warn "creating table...";
-        $dbh->do('create table '.$attr{table}.' (id integer primary key autoincrement, docid text, pubid text, pubdate text, effective text, source text, body text, pages integer, pdf_href text)');
+        $dbh->do('create virtual table '.$attr{table}.' USING fts4(title text, docuid text, pubid text, pubdate text, effective text, source text, body text, plain text, pages integer, pdf_href text)');
+        $dbh->commit();
     }
     return bless {%attr}, $class;
 }

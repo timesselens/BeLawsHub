@@ -27,9 +27,9 @@ our $list = sub {
     my $i = 0;
     while(my $obj = $fgov->request($param->{date} . sprintf('%02i',++$i), 'perl')) {
         push @rows, $obj;
-        # warn Dumper $obj;
-        $dbh->do('insert into belaws_docs (docid,pubid,pubdate,source,body,pages,pdf_href,effective) values (?,?,?,?,?,?,?,?)', undef,
-                @{$obj}{qw/docid pubid pubdate source body pages pdf_href effective/});
+        warn Dumper $obj;
+        $dbh->do('insert into belaws_docs (docuid,pubid,pubdate,source,body,plain,pages,pdf_href,effective) values (?,?,?,?,?,?,?,?,?)', undef,
+                @{$obj}{qw/docuid pubid pubdate source body plain pages pdf_href effective/});
     }
 
     return [ 200, [ 'Content-Type' => 'application/json' ], [ encode_json(\@rows) ] ];
