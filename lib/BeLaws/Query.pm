@@ -6,6 +6,9 @@ use HTTP::Request;
 use HTTP::Response;
 use BeLaws::Driver::LWP;
 use JSON::XS;
+use Data::Dumper;
+use HTML::Strip;
+use File::Slurp qw/slurp/;
 
 ###############################################################################
 # Author: Tim Esselens <tim.esselens@gmail.com> (c) 2011 iRail vzw/asbl [AGPL]
@@ -44,9 +47,11 @@ sub make_request {
 }
 
 sub parse_response {
-    my ($self, $http_response, $dataType) = @_;
+    my ($self, $in, $dataType) = @_;
 
-    my $html = $http_response->decoded_content();
+    my $html = ref $in eq 'HTTP::Response' ? $in->decoded_content() : 
+                -e $in ? slurp($in) :
+                $in;
 
     my ($title) = ($html =~ m#<th align = left width=100%>\n</b><b>\s*([^<]+)\s*<br>#smi);
     my ($bron) = ($html =~ m#<font color=Red>\s*<b>\s*Bron\s*:\s*</b></b>\s*</font>\s*([^<]+)\s*#smi);
@@ -62,14 +67,15 @@ sub parse_response {
         source => $bron,
         pubdate => $pub,
         pubid => $num,
-        docid => $dossiernr,
+        docuid => $dossiernr,
         pages => $blz,
         pdf_href => $pdf_href,
         effective => $inwerking,
         body => $html,
+        plain => HTML::Strip->new()->parse($html),
     };
 
-    return unless defined $obj->{docid};
+    return unless defined $obj->{docuid};
 
     $dataType ||= 'perl';
 
