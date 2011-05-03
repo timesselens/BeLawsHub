@@ -1,0 +1,64 @@
+div.ui-layout-north form img.spinner {
+    display: none;
+}
+
+tr.entry {
+    display: block;
+    border-bottom: 1px dotted #ececec;
+    padding: 5px 0;
+    line-height: 150%;
+    margin: 0;
+}
+
+tr.entry em.hl, div.mainview em.hl {
+    background-color: yellow;
+    border: 1px solid darkGrey;
+    -moz-box-shadow: 1px 1px 2px #ccc;
+    -moz-border-radius: 3px;
+    padding: 0 2px;
+}
+
+tr.entry:hover {
+    background: yellowgreen;
+    cursor: pointer;
+}
+div.ui-layout-north div#flag {
+    float: left;
+    text-shadow: 2px 2px 1px white;
+    margin-right: 1em;
+}
+div.ui-layout-north h1 {
+    float: left;
+    font-size: 1.4em;
+    text-shadow: 2px 2px 1px white;
+    font-weight: bold;
+}
+div.ui-layout-north form {
+    float: right;
+}
+
+div.ui-layout-west {
+    background: #ccc;
+    border: none;
+}
+ul.panellist ul { margin: 0; }
+ul.panellist > li { margin-bottom: 1em;  }
+ul.panellist > li > div.sunkpanel { 
+    clear: both; background-color: #ececec; 
+    border-radius: 3px 3px 3px 3px;
+    margin-top: 0.5em;
+    padding: 0.5em;
+}
+ul.panellist > li img { clear: left; float: left; margin-right: 4px; }
+ul.panellist > li h2 { float: left; font-size: 1em; margin-bottom: 5px;}
+
+ul.panellist ul.historylist li {
+    cursor: pointer;
+    font-size: 0.9em;
+    letter-spacing: 120%;
+    color: #333;
+    margin: 5px 0; 
+}
+ul.panellist ul.historylist li:hover {
+    text-decoration: underline;
+}
