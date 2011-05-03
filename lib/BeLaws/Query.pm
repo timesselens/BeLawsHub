@@ -53,16 +53,17 @@ sub parse_response {
                 -e $in ? slurp($in) :
                 $in;
 
-    my ($title) = ($html =~ m#<th align = left width=100%>\n</b><b>\s*([^<]+)\s*<br>#smi);
+    my ($date,$title) = ($html =~ m#<th align\s*=\s*left\s*width=100%>\n</b><b>\s*([^\-]+)\s*\.\s*\-\s*([^<]+)\s*#smi);
     my ($bron) = ($html =~ m#<font color=Red>\s*<b>\s*Bron\s*:\s*</b></b>\s*</font>\s*([^<]+)\s*#smi);
     my ($pub) = ($html =~ m#<font color=Red>\s*<b>\s*Publicatie\s*:\s*</b>\s*</font>\s*([\d\-]+)\s*#smi);
     my ($num) = ($html =~ m#<font color=red>\s*nummer\s*:\s*</font>\s*([^<]+)\s*#smi);
     my ($blz) = ($html =~ m#<font color=red>\s*bladzijde\s*:\s*</font>\s*(\d+)\s*#smi);
     my ($pdf_href) = ($html =~ m#<a href=([^\s]+) target=_parent>BEELD</a>#smi);
     my ($dossiernr) = ($html =~ m#<font color=Red>\s*<b>\s*Dossiernummer\s*:\s*</b>\s*</font>\s*([^<]+)\s*#smi);
-    my ($inwerking) = ($html =~ m#<font color=Red>\s*<b>\s*Inwerkingtreding\s*:\s*</b>\s*</font>\s*([\d\-]+)\s*#smi);
+    my ($inwerking) = ($html =~ m#<font color=Red>\s*<b>\s*Inwerkingtreding\s*:\s*</b>\s*</font>\s*([\w\-]+)\s*#smi);
 
     my $obj = {
+        date => $date,
         title => $title,
         source => $bron,
         pubdate => $pub,
@@ -74,6 +75,7 @@ sub parse_response {
         body => $html,
         plain => HTML::Strip->new()->parse($html),
     };
+
 
     return unless defined $obj->{docuid};
 
@@ -116,10 +118,6 @@ my $beq = new BeLaws::Query();
 my $response = $beq->request('2010020901','html');
 
 print $response;
-
-=head1 TODO
-
-_format_to_json()
 
 =head1 AUTHORS
 
