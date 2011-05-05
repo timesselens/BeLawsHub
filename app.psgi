@@ -7,8 +7,10 @@ use Plack::Builder;
 use Plack::Middleware::Static;
 use Plack::App::File;
 
+my $error_logfile = $ENV{HOME}."/var/log/belawshub.error.log";
 
 builder {
+   open STDERR, ">>", $error_logfile or die $!;
    mount "/api/" => builder {
        mount "/list.json" => $BeLaws::API::list;
        mount "/doc.json" => $BeLaws::API::doc;
