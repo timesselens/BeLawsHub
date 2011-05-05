@@ -24,6 +24,10 @@ $(function() {
     } else {
         // alert('no localstorage support, upgrade your browser');
     }
+                
+    $(".mainview").load("/intro.html");
+
+
 
 
     // helper functions -------------------------------------------------------------------------------------------------------
