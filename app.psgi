@@ -20,8 +20,9 @@ builder {
 
    mount "/" => builder {
         enable 'Plack::Middleware::Static', path => qr{^/(images|js|vendor|html|css|favicon\.ico)}, root => 'html/';
-        # defaults to index.html for all
-        Plack::App::File->new(file => 'html/index.html');
+        mount "/" => Plack::App::File->new(file => 'html/index.html');
+        mount "/index.html" => Plack::App::File->new(file => 'html/index.html');
+        mount "/intro.html" => Plack::App::File->new(file => 'html/intro.html');
    };
 
 };
