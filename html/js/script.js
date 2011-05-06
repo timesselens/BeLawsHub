@@ -25,10 +25,6 @@ $(function() {
         // alert('no localstorage support, upgrade your browser');
     }
                 
-    $(".mainview").load("/intro.html");
-
-
-
 
     // helper functions -------------------------------------------------------------------------------------------------------
     function supports_localstorage() {
