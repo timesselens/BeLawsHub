@@ -15,10 +15,10 @@
 
 <div class="ui-layout-north" style="border: none; background: #ccc">
     <div id="flag"><b style="color: black;">&#9608;</b><b style="color: yellow;">&#9608;</b><b style="color: red;">&#9608;</b></div>
-    <h1>BeLawsHub</h1>
+    <h1><a style="text-decoration: none; color: black;" href="/">BeLawsHub</a></h1>
     <form>
         <img src="/images/ajax-loader.gif" class="spinner" />
-        <input type="text" name="q" value="" id="q" placeholder="zoekterm AND zoekterm"/>
+        <input type="text" name="q" value="" id="q" placeholder="search"/>
         <input type="submit" name="query" value="Go" id="query"/>
     </form>
 </div>
@@ -43,12 +43,23 @@
             <ul>
                 <li> This is an alpha preview, don't expect too much
                 <li> It's slow to search (sorry, proof of concept)
-                <li> Bookmarking doesn't work yet
+                <li> Bookmarks aren't saved yet
+                <li> Only tested in Firefox 4, testers wanted.
             </ul>
 
             <h2>Changelog</h2>
             <ul>
-                <li> 2011-05-04 initial public alpha preview
+            <li> <h3>2011-05-10 moved state into url</h3>
+                <p>By using a javascript browser feature which is called
+                <i>pushState</i> we've made it possible to save the state of
+                the belaws UI in the URL and thus in a bookmark.  Whenever you
+                search or click a document, the URL will change accordingly.
+                For example
+                http://belaws.irail.be/s/arbeidsovereenkomst/d/2010-12-12/08 .
+                You can bookmark these in your browser.</p>
+                <p>Note that the UI's internal bookmarks (on the left hand side) are <b>NOT</b> saved, nor is the search history</p>
+            </li>
+            <li><h3>2011-05-04 initial public alpha preview</h3></li>
             </ul>
 
             <h2>Feedback</h2>
