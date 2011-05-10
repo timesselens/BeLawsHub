@@ -30,7 +30,7 @@ $(function() {
     var urlQuerySearch = window.location.toString().match(/\/s\/([^\/]*)/);
     var urlQueryDocUID = window.location.toString().match(/\/d\/([\w\d\-\/]+)/);
 
-    if(urlQuerySearch) { $('input[name=q]').val(urlQuerySearch[1]); submit(); }
+    if(urlQuerySearch) { $('input[name=q]').val(unescape(urlQuerySearch[1])); submit(); }
     if(urlQueryDocUID) { show(urlQueryDocUID[1]); }
                 
 
@@ -125,7 +125,7 @@ $(function() {
         var urlQuerySearch = window.location.toString().match(/\/s\/([^\/]+)/);
         var urlQueryDocUID = window.location.toString().match(/\/d\/([\w\d\-\/]+)/);
 
-        $('ul.panellist ul.bookmarklist').append(['<li><a href="',window.location.pathname,'"><span class="docuid">',urlQueryDocUID[1],'</span><span class="search">',urlQuerySearch[1],'</span></a></li>'].join(''));
+        $('ul.panellist ul.bookmarklist').append(['<li><a href="',window.location.pathname,'"><span class="docuid">',unescape(urlQueryDocUID[1]),'</span><span class="search">',unescape(urlQuerySearch[1]),'</span></a></li>'].join(''));
     });
 
     $("ul.panellist ul.historylist li").live('click', function(e) {
