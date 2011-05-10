@@ -2,10 +2,13 @@ div.ui-layout-north form img.spinner {
     display: none;
 }
 
+table#result {
+    width: 100%;
+}
 tr.entry {
     display: block;
     border-bottom: 1px dotted #ececec;
-    padding: 5px 0;
+    padding: 5px;
     line-height: 150%;
     margin: 0;
 }
@@ -21,6 +24,15 @@ tr.entry em.hl, div.mainview em.hl {
 tr.entry:hover {
     background: yellowgreen;
     cursor: pointer;
+}
+
+tr.selected {
+    border: 1px solid goldenRod;
+    background-color: lightYellow;
+}
+
+div.searchresults { 
+    padding: 5px;
 }
 div.ui-layout-north div#flag {
     float: left;
@@ -41,6 +53,8 @@ div.ui-layout-west {
     background: #ccc;
     border: none;
 }
+
+
 ul.panellist ul { margin: 0; }
 ul.panellist > li { margin-bottom: 1em;  }
 ul.panellist > li > div.sunkpanel { 
@@ -49,7 +63,7 @@ ul.panellist > li > div.sunkpanel {
     margin-top: 0.5em;
     padding: 0.5em;
 }
-ul.panellist > li img { clear: left; float: left; margin-right: 4px; }
+ul.panellist > li img { float: left; margin-right: 4px; }
 ul.panellist > li h2 { float: left; font-size: 1em; margin-bottom: 5px;}
 
 ul.panellist ul.historylist li {
@@ -60,6 +74,25 @@ ul.panellist ul.historylist li {
     margin: 5px 0; 
 }
 ul.panellist ul.historylist li:hover {
+    text-decoration: underline;
+}
+
+ul.panellist ul.bookmarklist li {
+    margin: 5px 0; 
+}
+ul.panellist ul.bookmarklist li a {
+    cursor: pointer;
+    font-size: 0.9em;
+    letter-spacing: 120%;
+    color: #333;
+}
+ul.panellist ul.bookmarklist span {
+    display: block;
+}
+ul.panellist ul.bookmarklist span.search {
+}
+
+ul.panellist ul.bookmarklist li:hover {
     text-decoration: underline;
 }
 

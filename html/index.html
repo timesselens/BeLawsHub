@@ -24,7 +24,7 @@
 </div>
 <div class="ui-layout-center" style="padding: 0; border: none">
     <div class="ui-layout-container" style="height: 100%;">
-        <div class="ui-layout-north"> 
+        <div class="ui-layout-north searchresults"> 
             <table id="result"> </table>
         </div>
         <div class="ui-layout-center mainview"> 
@@ -91,8 +91,12 @@
 </div>
 <div class="ui-layout-west">
     <ul class="panellist">
-        <li><img src="/images/icons/book.png" /><h2>Bookmarks</h2>
-            <div class="sunkpanel" id="search-history"></div></li>
+        <li><img src="/images/icons/book.png" /><h2>Bookmarks</h2> <img id="add_bookmark" src="/images/icons/plus.png" style="margin-left: 1em;" />
+            <div class="sunkpanel" id="bookmarks">
+                <ul class="bookmarklist">
+                </ul>
+            </div>
+        </li>
         <li><img src="/images/icons/find.png" /><h2>Search History</h2>
             <div class="sunkpanel" id="search-history">
                 <ul class="historylist">
