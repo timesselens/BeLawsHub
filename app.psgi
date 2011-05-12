@@ -23,9 +23,7 @@ builder {
    mount "/" => builder {
         enable 'Plack::Middleware::Static', path => qr{^/(images|js|vendor|html|css|favicon\.ico)}, root => 'html/';
         mount "/" => Plack::App::File->new(file => 'html/index.html');
-        mount "/favicon.ico" => Plack::App::File->new(file => 'favicon.ico');
         mount "/index.html" => Plack::App::File->new(file => 'html/index.html');
-        mount "/intro.html" => Plack::App::File->new(file => 'html/intro.html');
    };
 
 };
