@@ -19,6 +19,7 @@ use Capture::Tiny qw/capture/;
 use Test::Builder;
 use HTTP::Exception; sub throw { HTTP::Exception->throw(shift,status_message => shift) };
 use Data::Dumper;
+use encoding "utf-8"; # affects \w
 
 sub search {
     my $env = shift;
@@ -47,11 +48,11 @@ sub search {
     # warn "q is ".$param->{'q'}." filters are ".Dumper(\%filters);
 
     my $sql = join ' ', 
-            ("select docuid, docdate, ts_headline('pg',title, tsq, 'HighlightAll=TRUE') as title,",
+            ("select docuid, docdate, ts_headline('public.belaws_nl',title, tsq, 'HighlightAll=TRUE') as title,",
                 "(select cat from __staatsblad_nl_docuid_per_cat where docuid = any(docuids)) as cat,",
                 "ts_rank_cd(fts, tsq) as rank",
                 "from (select docuid,docdate,title,tsq,fts",
-                        "from staatsblad_nl, plainto_tsquery('pg',?) as tsq",
+                        "from staatsblad_nl, plainto_tsquery('public.belaws_nl',?) as tsq",
                         "where fts @@ tsq)",
                 "as result order by rank desc");
 
@@ -72,7 +73,7 @@ sub class_person {
                     'count(*) as count,', 
                     'array_agg(docuid) as docuids',
              'from (select name, unnest(staatsblad_nl_docuids) as docuid from person) as foo', 
-             "where docuid in (select docuid from staatsblad_nl where plainto_tsquery('pg',?) @@ fts)",
+             "where docuid in (select docuid from staatsblad_nl where plainto_tsquery('public.belaws_nl',?) @@ fts)",
              'group by name order by count desc');
 
     my $rows = $dbh->selectall_arrayref($sql, {Slice=>{}},$param->{'q'});
@@ -92,7 +93,7 @@ sub class_cat {
             'count(*) as count,',
             'array_agg(docuid) as docuids', 
      'from (select cat, unnest(docuids) as docuid from __staatsblad_nl_docuid_per_cat) as foo',
-     "where docuid in (select docuid from staatsblad_nl where plainto_tsquery('pg',?) @@ fts)",
+     "where docuid in (select docuid from staatsblad_nl where plainto_tsquery('public.belaws_nl',?) @@ fts)",
      'group by cat order by count desc');
 
     my $rows = $dbh->selectall_arrayref($sql, {Slice=>{}},$param->{'q'});
@@ -112,7 +113,7 @@ sub class_geo {
             'count(*) as count,',
             'array_agg(docuid) as docuids', 
      'from (select geo, unnest(docuids) as docuid from __staatsblad_nl_docuid_per_geo) as foo',
-     "where docuid in (select docuid from staatsblad_nl where plainto_tsquery('pg',?) @@ fts)",
+     "where docuid in (select docuid from staatsblad_nl where plainto_tsquery('public.belaws_nl',?) @@ fts)",
      'group by geo order by count desc');
 
     my $rows = $dbh->selectall_arrayref($sql, {Slice=>{}},$param->{'q'});
@@ -140,8 +141,8 @@ sub doc {
     if($query) {
         my $sql = join ' ',
                 ("select ",
-                    "ts_headline('pg',body, plainto_tsquery('pg',?),'StartSel=\"<em class=hl>\", StopSel=</em>, HighlightAll=TRUE') as body,",
-                    "ts_headline('pg',title, plainto_tsquery('pg',?),'StartSel=\"<em class=hl>\", StopSel=</em>, HighlightAll=TRUE') as title",
+                    "ts_headline('public.belaws_nl',body, plainto_tsquery('public.belaws_nl',?),'StartSel=\"<em class=hl>\", StopSel=</em>, HighlightAll=TRUE') as body,",
+                    "ts_headline('public.belaws_nl',title, plainto_tsquery('public.belaws_nl',?),'StartSel=\"<em class=hl>\", StopSel=</em>, HighlightAll=TRUE') as title",
                     (map { ','.$_ } @$cols),
                  "from staatsblad_nl",
                  "where docuid = ? limit 1");

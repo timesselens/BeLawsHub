@@ -106,8 +106,7 @@ builder {
         enable 'Plack::Middleware::Static', path => qr{^/(images|js|vendor|html|css|favicon\.ico)}, root => 'html/';
         mount "/app.html" => Plack::App::File->new(file => 'html/app.html'); 
         mount "/doc.html" => \&BeLaws::Frontend::doc;
-        
-        mount "/" => Plack::App::File->new(file => 'html/index.html'); #catchall
+        mount "/" => Plack::App::File->new(file => 'html/app.html'); #catchall
    };
 
 };

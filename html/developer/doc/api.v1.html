@@ -1,229 +1,228 @@
-<!doctype html>
-<html>
-<head>
-    <style> /* {{{ */
-    html { font-size:100%; font:inherit; margin: 0; padding: 0; }
-    body { margin: 0; padding: 0em; background-image: url(/images/seamlesspaper3.jpg); }
-    pre { margin: 1em; padding: 0 }
-    code { margin: 0; padding: 0;}
-    h1,h2,h3 { margin: 0.5em 0 1em 0; padding: 0 }
-    h2 span.method { color: #99CF50; }
-    body > *  { padding-left: 35px; }
-    body > ul { margin-left: 1em; }
-    div.background {
-        background: #666;
-        left: 0;
-        right: 0;
-        background-image: url(http://farm4.static.flickr.com/3315/3554060980_2a9f170da6_o.jpg); 
-        background-position: -200px -250px;
-        box-shadow: 0 5px 5px #ccc;
-        -webkit-box-shadow: 0 5px 5px #ccc;
-        text-shadow: 2px 2px 1px white;
-        padding-bottom: 1em;
-    }
-    div.background h1 {
-        background: transparent;
-        box-shadow: none;
-        padding-left: 0 !important;
-        cursor: pointer;
-        line-height: normal;
-        padding: 1em 0 0 0;
-    }
-    div.linkmenu {
-        position: absolute;
-        width: 23.5%;
-        left: 10px;
-        top: 35px;
-        background: white;
-        padding-left: 0;
-        border: 1px solid #aaa;
-        border-top:1px solid #ccc;
-        box-shadow: 1px 2px 2px grey;
-        -moz-border-radius: 0px 0px 10px 10px;
-        z-index: 100;
-    }
+<script src="/vendor/highlight.pack.js"></script>
+<script src="/vendor/jquery-1.6.1.min.js"></script>
+<link rel="stylesheet" href="/vendor/github.css">
+<script src="/js/script.js" charset="utf-8"></script>
+<script type="text/javascript" language="javascript" charset="utf-8">
+    $(function() { belaws.menu.init(); })
+</script>
 
-    div.linkmenu ul { margin: 0; padding: 0;  }
-    div.linkmenu ul li { margin: 0; padding: 0; list-style: none;}
-
-
-    div.linkmenu ul li span a {
-        display: block;
-        padding-left: 0.5em;
-        padding-top: 10px;
-        padding-bottom: 10px;
-        border-top: 1px solid #ddd;
-        text-decoration: none;
-        font-weight: bold;
-        color: #333;
-    }
-    div.linkmenu ul li span a span {
-        display: block;
-        color: #666;
-        padding-top: 5px;
-        text-decoration: none;
-        font-weight: normal;
-        font-style: italic;
-        font-size: 10px;
-    }
-    div.linkmenu ul li:first-child span a {
-        border-top: none;
-    }
-    div.linkmenu ul li a:hover {
-        background: #eee;
-    }
-    div.linkmenu ul li:last-child a:hover {
-        -moz-border-radius: 0px 0px 10px 10px;
-    }
-    h1 {
-        margin-top: 0;
-        line-height: 200%; 
-        background: #eee;
-        box-shadow: 0 5px 5px #ccc;
-        -webkit-box-shadow: 0 5px 5px #ccc;
-        text-shadow: 2px 2px 1px white;
-    }
-    h3 { font-size: 1.2em; font-variant: small-caps; font-family: Tahoma; }
-    div#flag { padding: 1.4em 0 1em 1em; float: left; text-shadow: 2px 2px 1px white; font-size: 150%; display: inline; margin-right: 1em;}
-
-    p code { font-weight: bold; font-family: monospace; background-color: #feffef; padding: 3px 0; min-width: 300px; min-height: 5em; }
-
-    table { border-spacing: 0px; padding: 4px; font-family: monospace; background-color: white; border: 1px solid #999; box-shadow: 2px 2px 2px #ccc; border-radius: 3px; margin: 1em 1em 1em 35px; }
-    table th { padding: 5px 1em 5px 5px; text-align: left; font-variant: small-caps; }
-    table td { padding: 2px 15px 2px 5px; }
-    table tr { background: #efefef; }
-    table tbody { line-height: 200%;}
-    table tbody tr td:nth-child(1) { color: blue; font-weight: bold; }
-    table tbody tr td:nth-child(4) { font-family: Tahoma }
-    table tbody tr:nth-child(odd) { background-color: #fafafa; }
-    table tbody input { min-width: 200px; }
-
-    div.console div { margin: 5px 0; padding: 4px 1em; font-weight: bold; line-height:150%; font-size: 1.2em; font-family: monospace;}
-    div.console div em.hl { background-color: yellow; font-weight: bold; border:1px solid brown; color: black; }
-    div.console div:nth-child(odd) { background-color: #222; }
-    div.url a { margin-left: 0.5em; font-size: 0.8em; }
-
-    input.test, input.close_console { float: right; margin-right: 1em;}
-
-    hr { border: none; height: 30px; -2em; background-color: #f3f3f3; box-shadow: 0 5px 5px #ccc; -webkit-box-shadow: 0 5px 5px #ccc; margin: 2em 0;}
-
-    div.col {
-        -moz-column-count: 3;
-        -moz-column-gap: 20px;
-        -webkit-column-count: 3;
-        -webkit-column-gap: 20px;
-        column-count: 3;
-        column-gap: 20px;
-        margin-bottom: 2em;
-    }
-    table.changelog .id a {color: maroon; font-family: monospace; font-size: 1em; margin-right: 1em; text-decoration: none;}
-    table.changelog .name {color: navy;   margin-right: 1em;}
-    table.changelog .date {color: darkgreen;}
-    </style> <!-- }}} -->
-    <script src="/vendor/highlight.pack.js"></script>
-    <script src="/vendor/jquery-1.6.1.min.js"></script>
-    <link rel="stylesheet" href="/vendor/github.css">
-    <script src="/js/script.js" charset="utf-8"></script>
-    <script type="text/javascript" language="javascript" charset="utf-8">
-        $(function() { belaws.menu.init(); })
-    </script>
-    <script> /* {{{ */
-        $(function() {
-            // load the changelog
-            function load_changelog_into(id,url) {
-                $.ajax({
-                    type: "GET",
-                    url: url,
-                    dataType: "jsonp",
-                    success: function(log) {
-                        $.each(log.commits,function(i,o) {
-                            $(id).append([
-                            '<tr class="cline">',
-                                '<td class="id"><a href="https://github.com/timesselens/BeLawsHub/commit/',o.id,'">', o.id.substr(0,7),'</a></td>',
-                                '<td class="name">',o.committer.name,'</td>',
-                                '<td class="date">',new Date(o.committed_date).toDateString(),'</td>',
-                                '<td class="message">',o.message,'</td>',
-                                '</tr>',
-                            ].join(''));
-                        });
-                    }
+<script>
+$(function() {
+    // load the changelog
+    function load_changelog_into(id,url) {
+        $.ajax({
+            type: "GET",
+            url: url,
+            dataType: "jsonp",
+            success: function(log) {
+                $.each(log.commits,function(i,o) {
+                    $(id).append([
+                        '<tr class="cline">',
+                            '<td class="id"><a href="https://github.com/timesselens/BeLawsHub/commit/',o.id,'">', o.id.substr(0,7),'</a></td>',
+                            '<td class="name">',o.committer.name,'</td>',
+                            '<td class="date">',new Date(o.committed_date).toDateString(),'</td>',
+                            '<td class="message">',o.message,'</td>',
+                        '</tr>',
+                    ].join(''));
                 });
             }
+       });
+    }
 
-            load_changelog_into('table.changelog#web tbody',"http://github.com/api/v2/json/commits/list/timesselens/BeLawsHub/master/html/index.html");
-            load_changelog_into('table.changelog#test tbody', "http://github.com/api/v2/json/commits/list/timesselens/BeLawsHub/master/html/developers/doc/api.v1.html");
-            // add a test button to the test code
-            $('pre code.test').each(function(i,o) {
-                $([ '<input class="test" type="submit" value="test" rel="code_',i,'" />',
-                '<div style="clear:both"></div>'
-                ].join('')).insertAfter($(this).parent());
-            });
+    load_changelog_into('table.changelog#web tbody',"http://github.com/api/v2/json/commits/list/timesselens/BeLawsHub/master/html/index.html");
+    load_changelog_into('table.changelog#test tbody', "http://github.com/api/v2/json/commits/list/timesselens/BeLawsHub/master/html/developers/doc/api.v1.html");
+    // add a test button to the test code
+    $('pre code.test').each(function(i,o) {
+        $([ '<input class="test" type="submit" value="test" rel="code_',i,'" />',
+            '<div style="clear:both"></div>'
+        ].join('')).insertAfter($(this).parent());
+    });
 
-            // when input is changed, alter the h2 link above it
-            $('table.paramtable').each(function(i,o) {
-                var $table = $(o);
-                if(! $table.next().is("div.url")) {
-                    $('<div class="url"><a></a></div>').insertAfter($table);
-                }
-                function render_url(e) {
-                    var all = [];
-                    $table.find('input').each(function(i,o) { all.push($(o).attr('name') +'='+ escape($(o).val())); });
-                    var link = '?'+all.join('&');
-                    var $h2_url = $table.prevAll('h2').first().find('a.url');
-                    console.log('h2 ur %o',$h2_url);
-                    if(! $h2_url.attr('rel')) { $h2_url.attr('rel',$h2_url.text()) }
-                    $h2_url.attr('href',$h2_url.attr('rel')+link).text($h2_url.attr('rel')+link);
-                };
-                $table.delegate('input','keyup',render_url);
-                $table.delegate('input','focus',render_url);
-            });
+    // when input is changed, alter the h2 link above it
+    $('table.paramtable').each(function(i,o) {
+        var $table = $(o);
+        if(! $table.next().is("div.url")) {
+            $('<div class="url"><a></a></div>').insertAfter($table);
+        }
+        function render_url(e) {
+            var all = [];
+            $table.find('input').each(function(i,o) { all.push($(o).attr('name') +'='+ escape($(o).val())); });
+            var link = '?'+all.join('&');
+            var $h2_url = $table.prevAll('h2').first().find('a.url');
+            console.log('h2 ur %o',$h2_url);
+            if(! $h2_url.attr('rel')) { $h2_url.attr('rel',$h2_url.text()) }
+            $h2_url.attr('href',$h2_url.attr('rel')+link).text($h2_url.attr('rel')+link);
+        };
+        $table.delegate('input','keyup',render_url);
+        $table.delegate('input','focus',render_url);
+    });
 
-            // all-in-one standalone logging function
-            function log(html) { 
-                if(! $("div.log")[0]) {
-                    $('body').prepend([ '<div class="log" style="',
-                        'position: fixed;', 
-                        'top: 0;', 'left: 5%;', 'right: 5%;', 'height: 300px;',
-                        'padding: 0 5px 20px 5px;', 'background: white;',
-                        'border: 1px solid #888;', 'border-radius: 0 0 6px 6px;', 'border-top: none;',
-                        'box-shadow: 0px 5px 5px #aaa;',
-                        '-webkit-box-shadow: 0px 5px 5px #aaa', '">',
-                        '<div class="console" style="font-family: monospace; background: black; color: white; height: 280px; margin-bottom: 5px; overflow:auto;">',
-                            '</div>',
-                        '<input type="submit" class="close_console" value="close" style="float: right; margin: 5px;" />',
-                        '</div>',
-                    ].join(''));
-                    $('body').delegate('input.close_console','click', function(e) {
-                        e.preventDefault();
-                        $("div.log").slideUp();
-                    });
-                }
-                $("div.log div.console").append('<div>'+html+'</div>');
-                $("div.log").slideDown();
-                $("div.log div.console").scrollTop($("div.log div.console")[0].scrollHeight);
-            }
-
-            // if a test button is clicked, eval the code
-            $('body').delegate('input.test', 'click', function(e) {
+    // all-in-one standalone logging function
+    function log(html) { 
+        if(! $("div.log")[0]) {
+            $('body').prepend([ '<div class="log" style="',
+                    'position: fixed;', 
+                    'top: 0;', 'left: 5%;', 'right: 5%;', 'height: 300px;',
+                    'padding: 0 5px 20px 5px;', 'background: white;',
+                    'border: 1px solid #888;', 'border-radius: 0 0 6px 6px;', 'border-top: none;',
+                    'box-shadow: 0px 5px 5px #aaa;',
+                    '-webkit-box-shadow: 0px 5px 5px #aaa', '">',
+                   '<div class="console" style="font-family: monospace; background: black; color: white; height: 280px; margin-bottom: 5px; overflow:auto;">',
+                   '</div>',
+                   '<input type="submit" class="close_console" value="close" style="float: right; margin: 5px;" />',
+                '</div>',
+            ].join(''));
+            $('body').delegate('input.close_console','click', function(e) {
                 e.preventDefault();
-                var rel = $(e.target).attr('rel');
-                var $code = $(e.target).prevAll('pre').first().find('code');
-                var codetxt = $code.text();
-                try {
-                    eval(codetxt);
-                    } catch(e) {
-                    console.log(e);
-                }
+                $("div.log").slideUp();
             });
+        }
+        $("div.log div.console").append('<div>'+html+'</div>');
+        $("div.log").slideDown();
+        $("div.log div.console").scrollTop($("div.log div.console")[0].scrollHeight);
+    }
+
+    // if a test button is clicked, eval the code
+    $('body').delegate('input.test', 'click', function(e) {
+        e.preventDefault();
+        var rel = $(e.target).attr('rel');
+        var $code = $(e.target).prevAll('pre').first().find('code');
+        var codetxt = $code.text();
+        try {
+            eval(codetxt);
+        } catch(e) {
+            console.log(e);
+        }
+    });
 
 
 
-            hljs.tabReplace = '    '; 
-            hljs.initHighlighting()
-        });
-    </script> <!-- }}} -->
-</head>
-<body>
+    hljs.tabReplace = '    '; 
+    hljs.initHighlighting()
+});
+</script>
+
+
+<style>
+html { font-size:100%; font:inherit; margin: 0; padding: 0; background: white; }
+body { margin: 0; padding: 0em; background: #fdfdfd;}
+pre { margin: 1em; padding: 0 }
+code { margin: 0; padding: 0;}
+h1,h2,h3 { margin: 0.5em 0 1em 0; padding: 0 }
+h2 span.method { color: #99CF50; }
+body > *  { padding-left: 35px; }
+body > ul { margin-left: 1em; }
+div.background {
+    background: #666;
+    left: 0;
+    right: 0;
+    background-image: url(http://farm4.static.flickr.com/3315/3554060980_2a9f170da6_o.jpg); 
+    background-position: -200px -250px;
+    box-shadow: 0 5px 5px #ccc;
+    -webkit-box-shadow: 0 5px 5px #ccc;
+    text-shadow: 2px 2px 1px white;
+    padding-bottom: 1em;
+}
+div.background h1 {
+    background: transparent;
+    box-shadow: none;
+    padding-left: 0 !important;
+    cursor: pointer;
+    line-height: normal;
+    padding: 1em 0 0 0;
+}
+div.linkmenu {
+    position: absolute;
+    width: 23.5%;
+    left: 10px;
+    top: 35px;
+    background: white;
+    padding-left: 0;
+    border: 1px solid #aaa;
+    border-top:1px solid #ccc;
+    box-shadow: 1px 2px 2px grey;
+    -moz-border-radius: 0px 0px 10px 10px;
+    z-index: 100;
+}
+
+div.linkmenu ul { margin: 0; padding: 0;  }
+div.linkmenu ul li { margin: 0; padding: 0; list-style: none;}
+
+
+div.linkmenu ul li span a {
+    display: block;
+    padding-left: 0.5em;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-top: 1px solid #ddd;
+    text-decoration: none;
+    font-weight: bold;
+    color: #333;
+}
+div.linkmenu ul li span a span {
+    display: block;
+    color: #666;
+    padding-top: 5px;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: italic;
+    font-size: 10px;
+}
+div.linkmenu ul li:first-child span a {
+    border-top: none;
+}
+div.linkmenu ul li a:hover {
+    background: #eee;
+}
+div.linkmenu ul li:last-child a:hover {
+    -moz-border-radius: 0px 0px 10px 10px;
+}
+h1 {
+    margin-top: 0;
+    line-height: 200%; 
+    background: #eee;
+    box-shadow: 0 5px 5px #ccc;
+    -webkit-box-shadow: 0 5px 5px #ccc;
+    text-shadow: 2px 2px 1px white;
+}
+h3 { font-size: 1.2em; font-variant: small-caps; font-family: Tahoma; }
+div#flag { padding: 1.4em 0 1em 1em; float: left; text-shadow: 2px 2px 1px white; font-size: 150%; display: inline; margin-right: 1em;}
+
+p code { font-weight: bold; font-family: monospace; background-color: #feffef; padding: 3px 0; min-width: 300px; min-height: 5em; }
+
+table { border-spacing: 0px; padding: 4px; font-family: monospace; background-color: white; border: 1px solid #999; box-shadow: 2px 2px 2px #ccc; border-radius: 3px; margin: 1em 1em 1em 35px; }
+table th { padding: 5px 1em 5px 5px; text-align: left; font-variant: small-caps; }
+table td { padding: 2px 15px 2px 5px; }
+table tr { background: #efefef; }
+table tbody { line-height: 200%;}
+table tbody tr td:nth-child(1) { color: blue; font-weight: bold; }
+table tbody tr td:nth-child(4) { font-family: Tahoma }
+table tbody tr:nth-child(odd) { background-color: #fafafa; }
+table tbody input { min-width: 200px; }
+
+div.console div { margin: 5px 0; padding: 4px 1em; font-weight: bold; line-height:150%; font-size: 1.2em; font-family: monospace;}
+div.console div em.hl { background-color: yellow; font-weight: bold; border:1px solid brown; color: black; }
+div.console div:nth-child(odd) { background-color: #222; }
+div.url a { margin-left: 0.5em; font-size: 0.8em; }
+
+input.test, input.close_console { float: right; margin-right: 1em;}
+
+hr { border: none; height: 30px; -2em; background-color: #f3f3f3; box-shadow: 0 5px 5px #ccc; -webkit-box-shadow: 0 5px 5px #ccc; margin: 2em 0;}
+
+div.col {
+    -moz-column-count: 3;
+    -moz-column-gap: 20px;
+    -webkit-column-count: 3;
+    -webkit-column-gap: 20px;
+    column-count: 3;
+    column-gap: 20px;
+    margin-bottom: 2em;
+}
+table.changelog .id a {color: maroon; font-family: monospace; font-size: 1em; margin-right: 1em; text-decoration: none;}
+table.changelog .name {color: navy;   margin-right: 1em;}
+table.changelog .date {color: darkgreen;}
+</style>
+
 <div id="flag"><b style="color: black;">&#9608;</b><b style="color: yellow;">&#9608;</b><b style="color: red;">&#9608;</b></div>
 
 <div class="background">
@@ -493,7 +492,4 @@ and <code>docuid</code> being the most important properties.</p>
     <li><a href="http://jquery.com">jQuery</a>
     <li><a href="http://softwaremaniacs.org/soft/highlight/en/">highlight.js</a>
     <li><a href="http://www.flickr.com/photos/hjjanisch/">background image by hjjanisch</a>
-    http://lostandtaken.com/blog/2010/10/5/42-free-vintage-paper-textures.html
 </ul>
-</body>
-</html>

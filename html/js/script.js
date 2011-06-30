@@ -180,7 +180,7 @@ var belaws = (function($) {
                     }
                 });
             }, //}}}
-            filter_search_results: function() {/*{{{*/
+            filter_search_results: function() {
                 $("table#result").hide();
                 if(belaws.state.filter) {
                     $("#result tr.entry").hide(); 
@@ -191,7 +191,7 @@ var belaws = (function($) {
                     $("#result tr").show();
                 }
                 $("table#result").show();
-            },/*}}}*/
+            },
             append_person_class: function() { // ajax gets person names and appends {{{
                 var query = $('input[name=q]').val().trim();
                 $.ajax({
@@ -391,14 +391,14 @@ var belaws = (function($) {
                 ].join(''));
             } // }}}
         },
-        helper: {/*{{{*/
+        helper: {
             intersect: function(a1,a2){ // TODO: use arguments
                 var u = {};
                 $.each([a1,a2],function(i,o){ $.each(o, function(j,p) { u[p] = (u[p] || 0) + 1;  }); });
                 var intersect = $.map(u, function(v,k) { if(v === 2) { return k; } } );
                 return intersect;
             }
-        }/*}}}*/
+        }
     };
 })(jQuery);
 

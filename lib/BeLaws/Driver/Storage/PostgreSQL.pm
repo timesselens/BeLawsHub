@@ -6,7 +6,7 @@ use base 'Exporter';
 use base 'BeLaws::Driver::Storage';
 
 my $config; eval { $config = do "./config.pl" }; if($@) { die $@."\n".$! }
-our $db = BeLaws::Driver::Storage::PostgreSQL->new( { user => $config->{dbi_user}, host => $config->{dbi_host} } );
+our $db = BeLaws::Driver::Storage::PostgreSQL->new( { user => $config->{dbi_user}, host => $config->{dbi_host}, port => $config->{dbi_port} } );
 our @EXPORT = qw/$db/;
 
 sub new {
@@ -14,7 +14,7 @@ sub new {
     my $class = ref $proto || $proto;
     my %attr = ( db => 'belaws', %{$attr || {}});
 
-    my $conn = $attr{conn} = DBIx::Connector->new("dbi:Pg:host=".($attr{host} || 'localhost').";dbname=".$attr{db}, 
+    my $conn = $attr{conn} = DBIx::Connector->new("dbi:Pg:host=".($attr{host} || 'localhost').";port=".($attr{port} || 5432).";dbname=".$attr{db}, 
                                         $attr{user},
                                         $attr{pass},
                                         { RaiseError => 1, PrintError => 1, pg_enable_utf8 => 1 } );
