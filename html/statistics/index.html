@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8" />
+  <title>BeLaws interface naar Belgisch Staatsblad - Moniteur Belge</title>
+  <link rel="stylesheet" href="/vendor/layout-default.css" />
+  <link rel="stylesheet" href="/css/reset.css" />
+  <link rel="stylesheet" href="/css/design.css" />
+  <meta name = "robots" content = "index, follow"/>
+  <meta name="revisit-after" content="31 days" />
+  <meta name="language" content="nl" /> 
+  <meta name="content-language" content="nl" /> 
+  <meta http-equiv="content-language" content="nl" />
+  <meta name="classification" content="database" />
+  <meta name="distribution" content="global" />
+  <meta name="copyright" content="iRail VZW 2011" />
+  <meta name="page-topic" content="belgisch staatsblad" />
+  <meta name="version" content="v0.03" />
+  <meta name="keywords" lang="nl" content="wet, opzoeken, belgisch, staatsblad, wetgeving, irail, belaws, koninklijk besluit" />
+  <meta name="description" content="BeLaws is een web 2.0 interface naar het Belgische staatsblad" lang="nl" />
+  <script src="/vendor/jquery-1.5.1-min.js" type="text/javascript" charset="utf-8"></script>
+  <script src="/vendor/jquery-ui-1.8.7.js" charset="utf-8"></script>
+  <script src="/vendor/jquery.layout-1.3.0-rc29.14.js" charset="utf-8"></script>
+  <script src="/js/script.js" charset="utf-8"></script>
+  <script>$(function() { belaws.menu.init() });</script>
+</head>
+<body>
+<div class="linkmenu" style="display:none">
+    <ul class="links">
+        <li class=""><span><a href="/app.html">App Home<span>The homescreen of the user interface</span></a></span></li>
+        <li class=""><span><a href="/statistics/index.html">Statistics<span>Database statistics</span></a></span></li>
+        <li class=""><span><a href="/developer/doc/api.v1.html">Documentation<span>BeLaws APIv1 developer documentation</span></a></span></li>
+    </ul>
+</div>
+ 
+    <div id="flag"><b style="color: black;">&#9608;</b><b style="color: yellow;">&#9608;</b><b style="color: red;">&#9608;</b></div>
+    <h1 class="dropdown">BeLawsHub<span style="text-shadow: none; margin-left: 1em; font-size: 0.5em;">▼</span></h1>
+<div style="clear:both"></div>
+
+  <section id="page">
+  <iframe src="stats.html" style="width: 1290px; height: 720px; overflow: hidden;">
+  </iframe>
+  </section>
+</body>
+</html>

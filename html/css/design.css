@@ -1,3 +1,49 @@
+
+h1.dropdown {
+    cursor: pointer;
+}
+div.linkmenu {
+    position: absolute;
+    width: 23.5%;
+    left: 10px;
+    top: 35px;
+    background: white;
+    border: 1px solid #aaa;
+    border-top:1px solid #ccc;
+    box-shadow: 1px 2px 2px grey;
+    -moz-border-radius: 0px 0px 10px 10px;
+    z-index: 100;
+}
+
+div.linkmenu ul li span a {
+    display: block;
+    padding-left: 0.5em;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-top: 1px solid #ddd;
+    text-decoration: none;
+    font-weight: bold;
+    color: #333;
+}
+div.linkmenu ul li span a span {
+    display: block;
+    color: #666;
+    padding-top: 5px;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: italic;
+    font-size: 10px;
+}
+div.linkmenu ul li:first-child span a {
+    border-top: none;
+}
+div.linkmenu ul li a:hover {
+    background: #eee;
+}
+div.linkmenu ul li:last-child a:hover {
+    -moz-border-radius: 0px 0px 10px 10px;
+}
+
 div.ui-layout-north form img.spinner {
     display: none;
 }
@@ -5,15 +51,25 @@ div.ui-layout-north form img.spinner {
 table#result {
     width: 100%;
 }
+
 tr.entry {
     display: block;
     border-bottom: 1px dotted #ececec;
+    border-left: 5px solid transparent;
     padding: 5px;
     line-height: 150%;
     margin: 0;
 }
 
-tr.entry em.hl, div.mainview em.hl {
+tr.entry td {
+    vertical-align: top;
+}
+
+tr.entry td.docdate {
+    width: 7em;
+}
+
+tr.entry em.hl, tr.entry b, div.mainview em.hl {
     background-color: yellow;
     border: 1px solid darkGrey;
     -moz-box-shadow: 1px 1px 2px #ccc;
@@ -22,31 +78,55 @@ tr.entry em.hl, div.mainview em.hl {
 }
 
 tr.entry:hover {
-    background: yellowgreen;
+    border-left: 5px solid yellowgreen;
     cursor: pointer;
 }
 
 tr.selected {
-    border: 1px solid goldenRod;
     background-color: lightYellow;
 }
 
 div.searchresults { 
     padding: 5px;
 }
-div.ui-layout-north div#flag {
+div#flag {
     float: left;
     text-shadow: 2px 2px 1px white;
-    margin-right: 1em;
+    margin: 5px 1em 0 10px;
 }
-div.ui-layout-north h1 {
+h1.dropdown {
     float: left;
     font-size: 1.4em;
     text-shadow: 2px 2px 1px white;
     font-weight: bold;
+    margin: 5px 1em 0 0px;
 }
 div.ui-layout-north form {
     float: right;
+    display: block;
+    width: 76%;
+    position: relative;
+}
+
+div.ui-layout-north form div#q_wrapper {
+    position: absolute;
+    display: inline;
+    left: 20px;
+    right: 40px;
+}
+div.ui-layout-north form input#q {
+    width: 100%;
+    border: 1px solid grey;
+    height: 28px;
+    font-size: 1.2em;
+    padding-left: 0.2em;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+}
+div.ui-layout-north form input#submit {
+    float: right;
+    height: 33px;
+    width: 33px;
 }
 
 div.ui-layout-west {
@@ -55,6 +135,9 @@ div.ui-layout-west {
 }
 
 
+
+ul.panellist {
+}
 ul.panellist ul { margin: 0; }
 ul.panellist > li { margin-bottom: 1em;  }
 ul.panellist > li > div.sunkpanel { 
@@ -62,6 +145,8 @@ ul.panellist > li > div.sunkpanel {
     border-radius: 3px 3px 3px 3px;
     margin-top: 0.5em;
     padding: 0.5em;
+    max-height: 8.7em;
+    overflow: hidden;
 }
 ul.panellist > li img { float: left; margin-right: 4px; }
 ul.panellist > li h2 { float: left; font-size: 1em; margin-bottom: 5px;}
@@ -95,9 +180,16 @@ ul.panellist ul.bookmarklist span.search {
 ul.panellist ul.bookmarklist li:hover {
     text-decoration: underline;
 }
+ul.panellist table { width: 100% }
+ul.panellist table td:nth-child(1) { width: 20px; }
+ul.panellist table td:nth-child(3) { text-align: right }
+ul.panellist table input {padding-top: 4px; margin: 0;}
+ul.panellist table {line-height: 150%; }
+ul.panellist table span.key {color: black; padding: 0 0.2em; cursor: pointer; display: block; }
+ul.panellist table span.count {color: #666;}
+ul.panellist table span.key:hover {background: white;  }
 
 div.author {
-    position: absolute;
     bottom: 2em;
     left: 1em;
     line-height: 150%;
@@ -127,3 +219,134 @@ div.author {
 .mainview i {
     font-style: italic;
 }
+
+.mainview .header {
+float: left;
+width: 100%;
+padding-bottom: 10px;
+border-bottom: 3px solid #ececec;
+}
+.mainview .header dl   {
+    float: left;
+    width: 400px;
+}
+.mainview .header dd   {
+}
+.mainview .header dt   {
+    float: left;
+    clear: both;
+    width: 8em;
+}
+.mainview .header .actions   {
+    float: right;
+}
+.mainview .header .actions li  {
+    float: left;
+}
+.mainview .header .actions li a {
+display: block;
+text-align: center;
+text-decoration: none;
+color: #333;
+width: 7em;
+border: 1px solid #555;
+background: #eee;
+margin: 5px 10px;
+padding: 5px 10px;
+-moz-border-radius: 2px;
+}
+
+/* legend ------------------------------------------------------------------------------------------ */
+
+div.legend {
+    -moz-border-radius: 2px;
+    -box-shadow: 1px 1px 2px grey;
+    width: 1em;
+    height: 1em;
+    margin-top: 0.2em;
+    margin-right: 0.5em;
+}
+
+div.null {
+    color: #606060;
+    border: dashed 1px #ddd;
+    background: #fff;
+    background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#eee));
+    background: -moz-linear-gradient(top,  #fff,  #eee);
+    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#eee');
+}
+
+div.wet {
+    color: #e8f0de;
+    border: solid 1px #538312;
+    background: #64991e;
+    background: -webkit-gradient(linear, left top, left bottom, from(#7db72f), to(#4e7d0e));
+    background: -moz-linear-gradient(top,  #7db72f,  #4e7d0e);
+    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#7db72f', endColorstr='#4e7d0e');
+}
+
+div.koninklijk_besluit {
+    color: #d7d7d7;
+    border: solid 1px #333;
+    background: #333;
+    background: -webkit-gradient(linear, left top, left bottom, from(#666), to(#000));
+    background: -moz-linear-gradient(top,  #666,  #000);
+    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#666666', endColorstr='#000000');
+}
+
+div.ministerieel_besluit {
+    color: #fef4e9;
+    border: solid 1px #da7c0c;
+    background: #f78d1d;
+    background: -webkit-gradient(linear, left top, left bottom, from(#faa51a), to(#f47a20));
+    background: -moz-linear-gradient(top,  #faa51a,  #f47a20);
+    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#faa51a', endColorstr='#f47a20');
+}
+
+div.collectieve_arbeidsovereenkomst {
+    color: #faddde;
+    border: solid 1px #980c10;
+    background: #d81b21;
+    background: -webkit-gradient(linear, left top, left bottom, from(#ed1c24), to(#aa1317));
+    background: -moz-linear-gradient(top,  #ed1c24,  #aa1317);
+    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#ed1c24', endColorstr='#aa1317');
+}
+
+div.besluit {
+    color: #feeef5;
+    border: solid 1px #d2729e;
+    background: #f895c2;
+    background: -webkit-gradient(linear, left top, left bottom, from(#feb1d3), to(#f171ab));
+    background: -moz-linear-gradient(top,  #feb1d3,  #f171ab);
+    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#feb1d3', endColorstr='#f171ab');
+}
+
+/* colors ------------------------------------------------------------------------------------------ */
+/* gray */
+.gray {
+    color: #e9e9e9;
+    border: solid 1px #555;
+    background: #6e6e6e;
+    background: -webkit-gradient(linear, left top, left bottom, from(#888), to(#575757));
+    background: -moz-linear-gradient(top,  #888,  #575757);
+    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#888888', endColorstr='#575757');
+}
+/* blue */
+.blue {
+    color: #d9eef7;
+    border: solid 1px #0076a3;
+    background: #0095cd;
+    background: -webkit-gradient(linear, left top, left bottom, from(#00adee), to(#0078a5));
+    background: -moz-linear-gradient(top,  #00adee,  #0078a5);
+    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#00adee', endColorstr='#0078a5');
+}
+/* rosy */
+.rosy {
+    color: #fae7e9;
+    border: solid 1px #b73948;
+    background: #da5867;
+    background: -webkit-gradient(linear, left top, left bottom, from(#f16c7c), to(#bf404f));
+    background: -moz-linear-gradient(top,  #f16c7c,  #bf404f);
+    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#f16c7c', endColorstr='#bf404f');
+}
+

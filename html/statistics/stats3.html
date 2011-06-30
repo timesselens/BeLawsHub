@@ -1,0 +1,92 @@
+<script src="/vendor/jquery-1.5.1-min.js" type="text/javascript" charset="utf-8"></script>
+<script src="/vendor/protovis-r3.2.js" type="text/javascript" charset="utf-8"></script>
+
+<h1>Hello World</h1>
+<div id="center"><div id="fig" style="width: 920; height: 920">
+<script type="text/javascript+protovis">
+
+var politicians = {};
+
+var hashmap = {};
+$.ajax({
+    type: "GET",
+    url: "/api/stats/person_party.json",
+    async: false,
+    success: function(list) {
+        politicians.nodes = list;
+        $.each(list,function(i,o) { hashmap[o.nodeName] = i });
+    }
+});
+
+$.ajax({
+    type: "GET",
+    url: "/api/stats/person_cosign.json",
+    async: false,
+    success: function(list) {
+        politicians.links = list;
+
+    }
+});
+
+$.each(politicians.links,function(i,o) {
+    o.source = hashmap[o.source];
+    o.target = hashmap[o.target];
+    o.value = o.value/2;
+});
+
+
+
+var colorhash = {
+    "OpenVLD": pv.color('dodgerblue'),
+    "MR": pv.color('dodgerblue'),
+    "cdH": pv.color('orange'),
+    "CD&V": pv.color('orange'),
+    "Ecolo": pv.color('yellowgreen'),
+    "Groen!": pv.color('yellowgreen'),
+    "SPA": pv.color('red'),
+    "PS": pv.color('red'),
+    "NVA": pv.color('yellow'),
+    "ProDG": pv.color('goldenrod')
+};
+
+var gs = {
+    "OpenVLD": 1,
+    "CD&V": 2,
+    "SPA": 3,
+    "Groen!": 4,
+    "NVA": 5,
+    "PS": 6,
+    "MR": 7,
+    "cdH": 8,
+    "Ecolo": 12,
+    null: 13
+};
+
+
+var color = function(d) { return colorhash[d.group] };
+
+var vis = new pv.Panel()
+    .width(920)
+    .height(920)
+    .top(120)
+    .left(120);
+
+var layout = vis.add(pv.Layout.Matrix)
+    .nodes(politicians.nodes)
+    .links(politicians.links)
+    .sort(function(a, b) a.group == b.group ? b.linkDegree - a.linkDegree : gs[a.group] - gs[b.group]);
+
+layout.link.add(pv.Bar)
+    .fillStyle(function(l) l.linkValue
+        ? ((l.targetNode.group == l.sourceNode.group)
+        ? color(l.sourceNode) : "#555") : "#eee")
+    .antialias(false)
+    .lineWidth(1);
+
+layout.label.add(pv.Label)
+    .textStyle(color);
+
+vis.render();
+
+</script>
+</div></div>

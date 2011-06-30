@@ -1,0 +1,358 @@
+#
+# FILE:    dutch96.aff (in 8bit ISO Latin1 character encoding!!)
+#
+# PURPOSE: affix file for new Dutch wordlist (according to spelling defined
+# 	   in Groene Boekje 1996) for 8bit ispell version. (`Ispell -vv'
+#	   should report `!NO8BIT (8BIT)'.)
+#
+#	   Derived from dutch.aff (version 1.4) of Arjan de Vet
+#	   <devet@win.tue.nl> and improved for ISO Latin1 by Johan Vromans
+#	   <jv@NL.net>. The current version is cross fertilized by ideas
+#	   from deutsch.aff from Heinz Knutzen. The main changes with
+#	   respect to 1.4 version are:
+#          (1) improved (La)TeX interface
+#          (2) improved interface for non-ASCII character encodings
+#          (3) optimized affixes (number of words in the raw dictionary
+#	       now reduced to about 50%)
+#          (4) handling of apostroph (') and dash (-) in words
+#          (5) some flag-names are renamed.
+#
+#	   For step (3) I wrote the PERL script affixes.pl.
+#
+# VERSION: 1.1 (22 Aug. 1997)
+#      (1) Added missing stringchars in altstringtype's. Solved `Alternate
+#          string character was already defined' messages and the problems
+#          for codepage 432.
+#      (2) Removed `plain TeX' altstringtype to keep within the default limit
+#          of MAXSTRINGCHARS (100).
+#      (3) Changed `latin1' defstringtype into "TeX" (was "nroff").
+#
+# AUTHOR:  Piet Tutelaers <rcpt@urc.tue.nl>
+# VERSION: 1.0 (Aug. 1997)
+#
+
+defstringtype "latin1" "TeX" ".lat" ".iso"
+
+bounderychars	\040	# space, in words like `Den Haag' (does not work yet)
+wordchars	\047	# apostroph, in words like `baby'tje'
+wordchars	\055	# dash, in words like `adjunct-chef'
+wordchars	4	# in A4
+wordchars	a	A
+stringchar	à	À
+stringchar	á	Á
+stringchar	â	Â
+stringchar	ä	Ä
+wordchars	[b-c]	[B-C]
+stringchar	ç	Ç
+wordchars	[d-e]	[D-E]
+stringchar	è	È
+stringchar	é	É
+stringchar	ê	Ê
+stringchar	ë	Ë
+wordchars	[f-i]	[F-I]
+stringchar	ì	Ì
+stringchar	í	Í
+stringchar	î	Î
+stringchar	ï	Ï
+wordchars	[j-n]	[J-N]
+stringchar	ñ	Ñ
+wordchars	[o]	[O]
+stringchar	ò	Ò
+stringchar	ó	Ó
+stringchar	ô	Ô
+stringchar	ö	Ö
+wordchars	[p-u]	[P-U]
+stringchar	ù	Ù
+stringchar	ú	Ú
+stringchar	û	Û
+stringchar	ü	Ü
+wordchars	[v-z]	[V-Z]
+
+#
+# TeX/LaTeX with dutch babel macro's. (Repeat all stringchar definitions
+# from the latin1 section. Otherwise you will get strange behaviour.)
+#
+altstringtype "tex" "TeX" ".tex" ".bib"
+
+altstringchar	\\\`a	à
+altstringchar	\\\'a	á
+altstringchar	\\\^a	â
+altstringchar	\"a	ä
+altstringchar	\\c{c}	ç
+altstringchar	\\\`e	è
+altstringchar	\\\'e	é
+altstringchar	\\\^e	ê
+altstringchar	\"e	ë
+altstringchar	\\\`i	ì
+altstringchar	\\\'i	í
+altstringchar	\\\^i	î
+altstringchar	\"i	ï
+altstringchar	\\\~n	ñ
+altstringchar	\\\`o	ò
+altstringchar	\\\'o	ó
+altstringchar	\\\^o	ô
+altstringchar	\"o	ö
+altstringchar	\\\`u	ù
+altstringchar	\\\'u	ú
+altstringchar	\\\^u	û
+altstringchar	\"u	ü
+altstringchar	\"U	Ü
+
+#
+# MSDOS codepage 437.
+#
+altstringtype "cp437" "TeX" ".pc" ".txt"
+
+altstringchar   \205    à
+altstringchar   \240    á
+altstringchar   \203    â
+altstringchar   \204    ä
+altstringchar   \207    ç
+altstringchar   \212    è
+altstringchar   \202    é
+altstringchar   \210    ê
+altstringchar   \211    ë
+altstringchar   \215    ì
+altstringchar   \241    í
+altstringchar   \214    î
+altstringchar   \213    ï
+altstringchar   \244    ñ
+altstringchar   \225    ò
+altstringchar   \242    ó
+altstringchar   \223    ô
+altstringchar   \224    ö
+altstringchar   \227    ù
+altstringchar   \243    ú
+altstringchar   \226    û
+altstringchar   \201    ü
+altstringchar   \232    Ü
+
+#
+# Plain TeX macro's. There are currently two problems:
+#  (1) they don't work as expected. For example the word `barri\"{e}re'
+#      is not recognized as `barri"ere' but as two separate words.
+#  (2) Give error message `Too many stringchar definitions' with the
+#      default of MAXSTRINGCHARS (100).
+#
+#altstringtype "tex" "TeX" ".tex"
+#
+#altstringchar	\\\"{a}	ä
+#altstringchar	\\\"{e}	ë
+#altstringchar	\\\"\\{i}	ï
+#altstringchar	\\\"{o}	ö
+#altstringchar	\\\"{u}	ü
+#altstringchar	\\\"{U}	Ü
+#altstringchar	\\\'a	á
+#altstringchar	\\\'e	é
+#altstringchar	\\\'i	í
+#altstringchar	\\\'o	ó
+#altstringchar	\\\'u	ú
+#altstringchar	\\\^a	â
+#altstringchar	\\\^e	ê
+#altstringchar	\\\^i	î
+#altstringchar	\\\^o	ô
+#altstringchar	\\\^u	û
+#altstringchar	\\\`a	à
+#altstringchar	\\\`e	è
+#altstringchar	\\\`i	ì
+#altstringchar	\\\`o	ò
+#altstringchar	\\\`u	ù
+#altstringchar	\\\~n	ñ
+#altstringchar	\\c{c}	ç
+
+#
+# The prefix table.
+#
+prefixes
+
+flag *A:
+   .		>	AAN		# maken		> aanmaken
+
+flag *B:
+   .		>	BE		# valling	> bevalling
+
+flag *C:
+   .		>	IN		# breek		> inbreek
+
+flag *F:
+   .		>	AF		# maken		> afmaken
+
+flag *G:
+   .		>	GE		# roepen	> geroepen
+
+flag *K:
+   .		>	OP		# drinken	> opdrinken
+
+flag *O:
+   .		>	ON		# geldig	> ongeldig
+
+flag *U:
+   .		>	UIT		# schakelen	> uitschakelen
+
+flag *V:
+   .		>	VER		# spreken	> verspreken
+
+#
+# The suffix table.
+#
+suffixes
+
+#
+# Diminitiva (-tje, -tjes, 'tje and -'tjes words).
+#
+flag J:
+   [AEIOU] [AEIOU]	>	TJE	# bui		> buitje
+   [AEIOU] [AEIOU]	>	TJES	# bui		> buitjes
+   [^AEIOU] A		>	ATJE    # opa		> opaatje
+   [^AEIOU] A		>	ATJES	# opa		> opaatjes
+   [^AEIOU] I		>	ETJE    # ski		> skietje
+   [^AEIOU] I		>	ETJES   # ski		> skietjes
+   [^AEIOU] Y		>	'TJE	# baby		> baby'tje
+   [^AEIOU] Y		>	'TJES	# baby		> baby'tjes
+   [^AEIOU] O		>	OTJE    # auto		> autootje
+   [^AEIOU] O		>	OTJES   # auto		> autootjes
+   [^AEIOU] U		>	UTJE    # accu		> accuutje
+   [^AEIOU] U		>	UTJES   # accu		> accuutjes
+   [AEIOU]  [LNRW]	>       TJE	# lepel		> lepeltje
+					# paal		> paaltje
+					# kuur		> kuurtje
+					# duw		> duwtje
+   [AEIOU]  [LNRW]	>       TJES	# lepel		> lepeltjes
+   [AEIOU]  M		>       PJE	# bezem		> bezempje
+   [AEIOU]  M		>       PJES	# bezem		> bezempjes
+   [AEIOU]  [BCDFGKPT]	>       JE	# club		> clubje
+   [AEIOU]  [BCDFGKPT]	>       JES	# club		> clubjes
+
+#
+# Nouns and verbs ending on -en and -n.
+#
+flag N:
+   [^E]		>	EN		# wiel		> wielen
+   [E]		>	N		# made		> maden
+
+flag M:
+   B		>	BEN		# web		> webben
+   D		>	DEN		# wad		> wadden
+   F		>	FEN		# mof		> moffen
+   G		>	GEN		# trog		> troggen
+   K		>	KEN		# tak		> takken
+   L		>	LEN		# hal		> hallen
+   M		>	MEN		# kam		> kammen
+   N		>	NEN		# ven		> vennen
+   P		>	PEN		# map		> mappen
+   R		>	REN		# nar		> narren
+   S		>	SEN		# bos		> bossen
+   T		>	TEN		# bot		> botten
+   Z		>	ZEN		# fez		> fezzen
+
+flag Z:
+   A A F	>	-AF,VEN		# raaf		> raven
+   A A S	>	-AS,ZEN		# daas		> dazen
+   E E F	>	-EF,VEN		# zeef		> zeven
+   E E S	>	-ES,ZEN		# frees		> frezen
+   E I S	>	-S,ZEN		# reis		> reizen
+   E U S	>	-S,ZEN		# reus		> reuzen
+   I E F	>	-F,VEN		# brief		> brieven
+   I E S	>	-S,ZEN		# kies		> kiezen
+   I J F	>	-F,VEN		# lijf		> lijven
+   I J S	>	-S,ZEN		# prijs		> prijzen
+   O E F	>	-F,VEN		# schroef	> schroeven
+   O E S	>	-S,ZEN		# hoes		> hoezen
+   O O F	>	-OF,VEN		# roof		> roven
+   O O S	>	-OS,ZEN		# doos		> dozen
+   U I F	>	-F,VEN		# druif		> druiven
+   U I S	>	-S,ZEN		# huis		> huizen
+   U U S	>	-US,ZEN		# refuus	> refuzen
+   [^AEIJOU] F	>	-F,VEN		# korf		> korven
+   [^AEIJOU] S	>	-S,ZEN		# vers		> verzen
+   H E I D	>	-ID,DEN	        # domheid	> domheden
+
+flag P:
+   A A D	>	-AD,DEN		# braad		> braden
+   A A F	>	-AF,FEN		# graaf		> grafen
+   A A G	>	-AG,GEN		# laag		> lagen
+   A A K	>	-AK,KEN		# draak		> draken
+   A A L	>	-AL,LEN		# baal		> balen
+   A A M	>	-AM,MEN		# beaam		> beamen
+   A A N	>	-AN,NEN		# baan		> banen
+   A A P	>	-AP,PEN		# gaap		> gapen
+   A A R	>	-AR,REN		# blaar		> blaren
+   A A S	>	-AS,SEN		# faas		> fasen
+   A A T	>	-AT,TEN		# citaat	> citaten
+   E E D	>	-ED,DEN		# Zweed		> Zweden
+   E E G	>	-EG,GEN		# kreeg		> kregen
+   E E K	>	-EK,KEN		# beek		> beken
+   E E L	>	-EL,LEN		# beveel	> bevelen
+   E E M	>	-EM,MEN		# embleem	> emblemen
+   E E N	>	-EN,NEN		# scheen	> schenen
+   E E P	>	-EP,PEN		# greep		> grepen
+   E E R	>	-ER,REN		# beer		> beren
+   E E S	>	-ES,SEN		# hees		> hesen
+   E E T	>	-ET,TEN		# vreet		> vreten
+   O O D	>	-OD,DEN		# bood		> boden
+   O O F	>	-OF,FEN		# filosoof	> filosofen
+   O O G	>	-OG,GEN		# boog		> bogen
+   O O K	>	-OK,KEN		# kook		> koken
+   O O L	>	-OL,LEN		# Pool		> Polen
+   O O M	>	-OM,MEN		# atoom		> atomen
+   O O N	>	-ON,NEN		# woon		> wonen
+   O O P	>	-OP,PEN		# doop		> dopen
+   O O R	>	-OR,REN		# ivoor		> ivoren
+   O O T	>	-OT,TEN		# boot		> boten
+   U U L	>	-UL,LEN		# moduul	> modulen
+   U U N	>	-UN,NEN		# tribuun	> tribunen
+   U U R	>	-UR,REN		# huur		> huren
+
+#
+# Nouns having a plural on -s.
+#
+flag S:
+   [^S]        >	S		# appel		> appels
+
+#
+# Nouns having a plural on 's.
+#
+flag X:
+   [^S]        >	'S		# baby		> baby's
+
+#
+# Words having an -e form.
+#
+flag E:
+   [^E]		>	E		# vroeg		> vroege
+					# toegewijd	> toegewijde
+
+#
+# Words having -(e)r(e) forms.
+#
+flag R:
+   [E]		>	R		# grote		> groter
+   [^E]		>	ER		# vroeg		> vroeger
+   [E]		>	RE		# grote		> grotere
+   [^E]		>	ERE		# vroeg		> vroegere
+
+#
+# Words having -st(e) forms.
+#
+flag T:
+   .		>	ST		# vroeg		> vroegst
+   .		>	STE		# vroeg		> vroegste
+
+flag D:
+   [^D]		>	D		# werken	> werkend
+   [^D]		>	DE		# werken	> werkende
+
+flag W:
+    [^T]	>	T		# werk		> werkt
+    [KFSTP]	>	TE		# werk		> werkte
+    [KFSTP]	>	TEN		# werk		> werkten
+    C H		>	TE		# lach		> lachte
+    C H		>	TEN		# lach		> lachten
+    [^KFSTPH]	>	DE		# antwoord	> antwoordde
+    [^KFSTPH]	>	DEN		# antwoord	> antwoordden
+
+flag H:
+    .		>	HEID		# gelegen	> gelegenheid
+
+flag I:
+    .		>	ING		# bedenk	> bedenking

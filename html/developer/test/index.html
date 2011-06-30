@@ -1,0 +1,33 @@
+<h1>Random seed test</h1>
+<div id="seed">
+</div>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+<script>
+$(function() {
+    $.ajax({
+        type: "GET",
+        url: "/api/seed/docuid.json",
+        success: function(r) {
+            $.each(r, function(i,o) {
+                $html = $([
+                    '<h1 rel="',o,'">',o,'</h1>',
+                    '<div rel="',o,'"class="docuid"></div>'
+                ].join(''));
+                $("div#seed").append($html);
+            });
+
+            $('div.docuid').each(function(i,o) {
+                $.ajax({
+                    type: "GET",
+                    url: "/api/internal/test/staatsblad.json",
+                    data: { docuid: $(o).attr('rel') },
+                    success: function(txt) {
+                            $(o).html('<pre>'+txt+'</pre>');
+                    }
+                });
+            });
+        }
+    });
+});
+</script>

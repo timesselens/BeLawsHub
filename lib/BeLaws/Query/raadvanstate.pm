@@ -1,4 +1,4 @@
-package BeLaws::Query;
+package BeLaws::Query::raadvanstate;
 use strict;
 use warnings;
 use Carp qw/croak/;
@@ -17,15 +17,11 @@ use File::Slurp qw/slurp/;
 sub new {
     my $class = shift;
     my $self = {};
-    $self->{base} = "http://www.ejustice.just.fgov.be";
-    $self->{url}  = "/cgi_loi/loi_a1.pl";
+    $self->{base} = "http://www.raadvst-consetat.be";
+    $self->{url}  = "/refLex/docs/";
     $self->{params} = {
-        caller      => 'list',
-        la          => 'N',
-        sql         => "dt+not+contains+'foo'",
-        language    => 'nl',
-        chercher    => 't',
-        fromtab     => 'wet_all'
+        db => 'chrono',
+        lang => 'nl',
     };
     return bless ($self, $class);
 }
@@ -34,11 +30,12 @@ sub make_request {
     my $self = shift;
     my %attr = ref $_[0] eq 'HASH' ? %{$_[0]} : @_; # so both `f({a=>1})` and `f(a=>1)` are allowed
 
-    croak 'cn is a required argument' unless defined $attr{cn};
+    croak 'mbid is a required argument' unless defined $attr{mbid};
+    croak 'mbid illegal format' unless $attr{mbid} =~ m/^\d+$/;
 
     my $url = $self->{base} .
               $self->{url} . 
-              '?' . join '&', ( 'cn='.$attr{cn}, (map { $_.'='.$self->{params}->{$_} } keys %{$self->{params}}));
+              '?' . join '&', ( 'mbid='.$attr{mbid}, (map { $_.'='.$self->{params}->{$_} } keys %{$self->{params}}));
 
     my $req = new HTTP::Request(GET => $url);
 
@@ -53,31 +50,31 @@ sub parse_response {
                 -e $in ? slurp($in) :
                 $in;
 
-    my ($date,$title) = ($html =~ m#<th align\s*=\s*left\s*width=100%>\n</b><b>\s*([^\-]+)\s*\.\s*\-\s*([^<]+)\s*#smi);
-    my ($bron) = ($html =~ m#<font color=Red>\s*<b>\s*Bron\s*:\s*</b></b>\s*</font>\s*([^<]+)\s*#smi);
-    my ($pub) = ($html =~ m#<font color=Red>\s*<b>\s*Publicatie\s*:\s*</b>\s*</font>\s*([\d\-]+)\s*#smi);
-    my ($num) = ($html =~ m#<font color=red>\s*nummer\s*:\s*</font>\s*([^<]+)\s*#smi);
-    my ($blz) = ($html =~ m#<font color=red>\s*bladzijde\s*:\s*</font>\s*(\d+)\s*#smi);
-    my ($pdf_href) = ($html =~ m#<a href=([^\s]+) target=_parent>BEELD</a>#smi);
-    my ($dossiernr) = ($html =~ m#<font color=Red>\s*<b>\s*Dossiernummer\s*:\s*</b>\s*</font>\s*([^<]+)\s*#smi);
-    my ($inwerking) = ($html =~ m#<font color=Red>\s*<b>\s*Inwerkingtreding\s*:\s*</b>\s*</font>\s*([\w\-]+)\s*#smi);
+    my ($title) = ($html =~ m#<h1 id="detail_title">([^<]+)</h1>#smio);
+    my ($date) = ($html =~ m#<td><b>Datum van de akte:</b></td>[\r\n\s]*<td>([^>]+)</td>#smio);
+    my ($kind) = ($html =~ m#<td><b>Aard van de akte:</b></td>[\r\n\s]*<td>([^>]+)</td>#smio);
+    my ($init) = ($html =~ m#<legend>Periode van geldigheid.*?van\s*(\d+/\d+/\d+)[\r\n\s]*tot#smio);
+    my ($fini) = ($html =~ m#<legend>Periode van geldigheid.*?van\s*.*?[\r\n\s]*tot\s*(\d+/\d+/\d+)#smio);
+    my ($codex_link) = ($html =~ m#(http://codex.vlaanderen.be/ALLESNL/wet/zoek.vwp\?db=CODEX&numac=\d+)#smio);
+    my ($numac) = ($codex_link =~ m/numac=(\d+)/);
+
+    $init =~ s#(\d+)/(\d+)/(\d+)#$3-$2-$1#;
+    $fini =~ s#(\d+)/(\d+)/(\d+)#$3-$2-$1#;
+    $date =~ s#(\d+)/(\d+)/(\d+)#$3-$2-$1#;
 
     my $obj = {
         date => $date,
         title => $title,
-        source => $bron,
-        pubdate => $pub,
-        pubid => $num,
-        docuid => $dossiernr,
-        pages => $blz,
-        pdf_href => $pdf_href,
-        effective => $inwerking,
-        body => $html,
-        plain => HTML::Strip->new()->parse($html),
+        kind => $kind,
+        numac => $numac,
+        codex_link => $codex_link,
+        timeframe => { starts => $init, ends => $fini },
+        # body => $html,
+        # plain => HTML::Strip->new()->parse($html),
     };
 
 
-    return unless defined $obj->{docuid};
+    # return unless defined $obj->{docuid};
 
     $dataType ||= 'perl';
 
@@ -94,7 +91,7 @@ sub request {
     my ($self, $docid, $format) = @_;
 
     my $drv = new BeLaws::Driver::LWP;
-    my $req = $self->make_request(cn => $docid);
+    my $req = $self->make_request(mbid => $docid);
     my $resp = $drv->process($req);
     my $ret = $self->parse_response($resp, $format);
 

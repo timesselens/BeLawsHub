@@ -1,0 +1,61 @@
+<script src="/vendor/jquery-1.5.1-min.js" type="text/javascript" charset="utf-8"></script>
+<script src="/vendor/protovis-d3.2.js" type="text/javascript" charset="utf-8"></script>
+
+<h1>Timeline</h1>
+<div id="center"><div id="fig" style="width: 1280; height: 610">
+<script type="text/javascript+protovis">
+(function($) {
+    // private vars {{{
+    var trends = {};
+    var hashmap = {};
+    var gs = { "OpenVLD": 1, "CD&V": 2, "SPA": 3, "Groen!": 4, "NVA": 5,
+               "PS": 6, "MR": 7, "cdH": 8, "Ecolo": 12 };
+
+    var colorhash = {
+        "OpenVLD": pv.color('dodgerblue'), "MR": pv.color('dodgerblue'),
+        "cdH": pv.color('orange'), "CD&V": pv.color('orange'),
+        "Ecolo": pv.color('yellowgreen'), "Groen!": pv.color('yellowgreen'),
+        "SPA": pv.color('red'), "PS": pv.color('red'),
+        "NVA": pv.color('yellow'),
+        "ProDG": pv.color('goldenrod')
+    };
+    // }}}
+    // get data {{{
+    $.ajax({ 
+        type: "GET",
+        url: "/api/stats/word_trends_per_month.json",
+        async: false,
+            success: function(list) {
+            trends = list;
+            //$.each(list,function(i,o) { hashmap[o.nodeName] = i });
+        }
+    });
+    // }}}
+    
+    // graph code {{{
+    var vis = new pv.Panel()
+        .width(1280)
+        .height(610)
+        .bottom(100);
+
+    var data = $.map(trends,function(i,o) { return o.count })
+    vis.add(pv.Line)
+        .data(trends)
+        .lineWidth(3);
+
+    vis.add(pv.Label)
+        .left(5)
+        .bottom(26)
+         .textAlign("left")
+        .textBaseline("middle")
+        .textAngle(-Math.PI / 2)
+        .text("BeLaws cosign network graph - (c) iRail VZW - Tim Esselens 2011");
+    // }}}
+    vis.render();
+})(jQuery);
+        </script> 
+</div></div>
+
+<!--
+vim: ft=javascript
+-->
