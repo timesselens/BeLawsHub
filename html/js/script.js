@@ -164,6 +164,7 @@ var belaws = (function($) {
                         centerlayout.open('north');
                         if( ! h.length > 0 ) {
                             $("#result").html('<div class="no_results">No results</div>');
+			    return;
                         }
                         $("#result").html(h.join(''));
                         if(urlQueryDocUID) { 
