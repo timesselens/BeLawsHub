@@ -164,15 +164,15 @@ var belaws = (function($) {
                         centerlayout.open('north');
                         if( ! h.length > 0 ) {
                             $("#result").html('<div class="no_results">No results</div>');
-			    return;
-                        }
-                        $("#result").html(h.join(''));
-                        if(urlQueryDocUID) { 
-                            var docuid = urlQueryDocUID[1];
-                            $("#result tr.selected").removeClass('selected');
-                            //console.log('docuid %o el %o', docuid, $("tr.entry[rel='"+docuid+"']"));
-                            $("#result tr.entry[rel='"+docuid+"']").addClass('selected');
-                        }
+                        } else {
+			    $("#result").html(h.join(''));
+                            if(urlQueryDocUID) { 
+                                var docuid = urlQueryDocUID[1];
+                                $("#result tr.selected").removeClass('selected');
+                                //console.log('docuid %o el %o', docuid, $("tr.entry[rel='"+docuid+"']"));
+                                $("#result tr.entry[rel='"+docuid+"']").addClass('selected');
+                            }
+			}
                         if(--spincount === 0) { $('img.spinner').hide(); }
                     },
                     error: function() {
