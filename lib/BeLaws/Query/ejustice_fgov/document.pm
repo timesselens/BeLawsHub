@@ -17,16 +17,19 @@ use File::Slurp qw/slurp/;
 
 sub new {
     my $class = shift;
+    my %attr = ref $_[0] eq 'HASH' ? %{$_[0]} : @_; # so both `f({a=>1})` and `f(a=>1)` are allowed
     my $self = {};
+    my $lang = (($attr{language} || '') =~ m/fr|french|fran?ais/) ? 'F' : 'N';
+
     $self->{base} = "http://www.ejustice.just.fgov.be";
     $self->{url}  = "/cgi_loi/loi_a1.pl";
     $self->{params} = {
         caller      => 'list',
-        la          => 'N',
+        la          => $lang,
         sql         => "dt+not+contains+'foo'",
-        language    => 'nl',
+        language    => 'nl', # their interface's language, our parsers use nl, do not change
         chercher    => 't',
-        fromtab     => 'wet_all'
+        fromtab     => $lang eq 'N' ? 'wet_all' : 'loi'
     };
 
     return bless ($self, $class);
