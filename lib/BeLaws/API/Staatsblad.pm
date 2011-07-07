@@ -35,7 +35,7 @@ sub fetch {#{{{
     my ($lang)      = ($param->{'lang'} =~ m/^(nl|fr|de)$/)                     or throw 500, 'lang is malformatted';
 
     my $drv = new BeLaws::Driver::LWP;
-    my $httpreq = new BeLaws::Query::ejustice_fgov::document->make_request(cn => $docuid); 
+    my $httpreq = BeLaws::Query::ejustice_fgov::document->new(language => $lang)->make_request(cn => $docuid); 
     my $resp = $drv->process($httpreq);
     my $cont = encode('utf8',$resp->decoded_content());
 
@@ -46,11 +46,11 @@ sub fetch {#{{{
         status => 'FETCHED',
         message => 'document has been correctly fetched from source',
         see_also => [
-            "http://".$env->{HTTP_HOST}."/api/internal/parse/staatsblad.json?docuid=$docuid",
-            "http://".$env->{HTTP_HOST}."/api/internal/format/staatsblad.json?docuid=$docuid",
-            "http://".$env->{HTTP_HOST}."/api/internal/resolve/staatsblad.json?docuid=$docuid",
-            "http://".$env->{HTTP_HOST}."/api/internal/test/staatsblad.json?docuid=$docuid",
-            "http://".$env->{HTTP_HOST}."/api/internal/info/staatsblad.json?docuid=$docuid" ],
+            "http://".$env->{HTTP_HOST}."/api/internal/parse/staatsblad.json?docuid=$docuid&lang=$lang",
+            "http://".$env->{HTTP_HOST}."/api/internal/format/staatsblad.json?docuid=$docuid&lang=$lang",
+            "http://".$env->{HTTP_HOST}."/api/internal/resolve/staatsblad.json?docuid=$docuid&lang=$lang",
+            "http://".$env->{HTTP_HOST}."/api/internal/test/staatsblad.json?docuid=$docuid&lang=$lang",
+            "http://".$env->{HTTP_HOST}."/api/internal/info/staatsblad.json?docuid=$docuid&lang=$lang" ],
     };
 
     eval { $dbh->do('insert into incoming (parser, uid, lang, body) values (?, ?, ?, ?)',undef,'BeLaws::Query::ejustice_fgov', $docuid, $lang, $cont) };
@@ -174,10 +174,10 @@ sub parse {#{{{
         docuid => $docuid,
         lang => $lang,
         see_also => [
-            "http://".$env->{HTTP_HOST}."/api/internal/fetch/staatsblad.json?docuid=$docuid",
-            "http://".$env->{HTTP_HOST}."/api/internal/format/staatsblad.json?docuid=$docuid",
-            "http://".$env->{HTTP_HOST}."/api/internal/test/staatsblad.json?docuid=$docuid",
-            "http://".$env->{HTTP_HOST}."/api/internal/info/staatsblad.json?docuid=$docuid" ],
+            "http://".$env->{HTTP_HOST}."/api/internal/fetch/staatsblad.json?docuid=$docuid&lang=$lang",
+            "http://".$env->{HTTP_HOST}."/api/internal/format/staatsblad.json?docuid=$docuid&lang=$lang",
+            "http://".$env->{HTTP_HOST}."/api/internal/test/staatsblad.json?docuid=$docuid&lang=$lang",
+            "http://".$env->{HTTP_HOST}."/api/internal/info/staatsblad.json?docuid=$docuid&lang=$lang" ],
         incoming_id => $row->{id},
         incoming_ts => $row->{ts},
     };
@@ -246,7 +246,7 @@ sub info {#{{{
     my ($lang)      = ($param->{'lang'} =~ m/^(nl|fr|de)$/)                     or throw 500, 'lang is malformatted';
 
     my $info = {
-        last_fetched => ($dbh->selectrow_array('select ts from incoming where uid = ?',undef,$docuid) || []),
+        last_fetched => ($dbh->selectrow_array('select ts from incoming where uid = ? and lang = ?',undef,$docuid,$lang) || []),
         # last_updated => $dbh->selectrow_array('select ts from staatsblad_nl where docuid = ?',undef,$docuid), #has no ts
         last_log => ($dbh->selectall_arrayref('select ts,iid,status,uid from x_process_log where uid = ?',{Slice=>{}},$docuid) || [])
     };
