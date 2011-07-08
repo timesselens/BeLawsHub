@@ -186,7 +186,7 @@ sub parse {#{{{
     throw (500, 'parsed object had no docuid') unless $obj->{docuid};
     throw (500, 'parsed object had no body') unless $obj->{body};
 
-    my %diff = map { $_ => diff(\($prev->{$_}),\($obj->{$_}), {STYLE => 'Unified'}) } grep { $obj->{$_} ne $prev->{$_} } keys %$obj;
+    my %diff = map { $_ => diff(\($prev->{$_}),\($obj->{$_}), {STYLE => 'Unified'}) } grep { ($obj->{$_} || 'undef') ne ($prev->{$_} || 'undef') } keys %$obj;
     $result->{diff} = \%diff;
 
     if(not %diff) {
