@@ -62,7 +62,7 @@ sub fetch {#{{{
     }
 
     if ($@ =~ m/tried to insert same body/) {
-        $result->{status_code} = 420; 
+        $result->{status_code} = 422;
         $result->{status} = 'deferred';
         $result->{message} = 'incoming queue already has a row with this exact content, discarding...';
     }
