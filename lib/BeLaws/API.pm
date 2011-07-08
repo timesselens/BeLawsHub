@@ -158,6 +158,7 @@ sub doc {
     # FIXME: cache in db
 
     $row->{pretty} = BeLaws::Format::ejustice_fgov::prettify($row->{body});
+    delete $row->{body} if $param->{'terse'};
 
     return [ 200, [ 'Content-Type' => 'application/json; charset=utf-8' ], [ encode_json($row) ] ];
 };
