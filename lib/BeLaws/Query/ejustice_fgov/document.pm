@@ -82,6 +82,8 @@ sub parse_response {
 
     my ($docdate) = ($dossiernr =~ m/(\d{4}-\d{2}-\d{2})/);
 
+    if ($pub =~ m/(\d{2})-(\d{2})-(\d{4})/) { $pub = "$3-$2-$1" }
+
     # cleanup 
     $title =~ s/[\r\n]*//g;
     
