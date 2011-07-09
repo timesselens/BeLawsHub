@@ -123,43 +123,48 @@ sub class_geo {
 
 
 sub doc {
+    # get main actors: the PSGI environment and the database handler
     my $env = shift;
     my $dbh = $db->get_dbh();
 
+    # get the HTTP request parameters into a Hash::Multivalue ref
     my $req = new Plack::Request($env);
     my $param = $req->parameters();
 
-
-    my $cols = $param->{'terse'} ? [qw//] : [qw/docuid pubdate plain pubid pubdate source pages effective/];
+    # validate incoming variables of which docuid is required
+    my ($lang) = ($param->{'lang'} || 'nl' =~ m/(nl|fr)/);
     my ($query) = ($param->{'q'} || '' =~ m/^((?:\w+\ )+)/);
+    my ($icols) = ($param->{'attr'} || '' =~ m/(\w+(?:\s*,\s*\w+)*)/);
     my ($docuid) = ($param->{'docuid'} || '' =~ m/^(\d{4}-\d{2}-\d{2}\/\d{2})$/)
                     or return [ 500, [ 'Content-Type' => 'text/plain' ], [ 'docuid is malformed' ] ];
 
-    warn sprintf('searching for %s with q=%s',$docuid,$query);
-    my $row;
+    # sql querystring munging, used if query is defined to hilight the matches from within the db
+    my $qq = $dbh->quote($query);
+    my $dict = 'public.belaws_'.$lang;
+    my $opts = 'StartSel="<em class=hl>", StopSel=</em>, HighlightAll=TRUE';
 
-    if($query) {
-        my $sql = join ' ',
-                ("select ",
-                    "ts_headline('public.belaws_nl',body, plainto_tsquery('public.belaws_nl',?),'StartSel=\"<em class=hl>\", StopSel=</em>, HighlightAll=TRUE') as body,",
-                    "ts_headline('public.belaws_nl',title, plainto_tsquery('public.belaws_nl',?),'StartSel=\"<em class=hl>\", StopSel=</em>, HighlightAll=TRUE') as title",
-                    (map { ','.$_ } @$cols),
-                 "from staatsblad_nl",
-                 "where docuid = ? limit 1");
-        $row = $dbh->selectrow_hashref($sql ,undef,$query,$query,$docuid);
-    } else {
-        my $sql = join ' ',
-            ('select body, title', 
-                (map { ','.$_ } @$cols),
-                'from staatsblad_nl where docuid = ? limit 1');
-        $row = $dbh->selectrow_hashref($sql ,undef,$docuid);
-    }
+    # a map of key => sql column expressions as to be able to dynamically alter the ones used
+    my $colmap = {
+        body => $query ? "ts_headline('$dict',body, plainto_tsquery('$dict',$qq), '$opts') as body" : 'body',
+        title => $query ? "ts_headline('$dict',title, plainto_tsquery('$dict',$qq), '$opts') as title" : 'title',
+        map { $_ => $_ } (qw/docuid plain pubid pubdate source pages effective pretty/)
+    };
 
-    # FIXME: cache in db
+    # map list of selected cols (icols or all keys of colmap) into a hash columnexpressions (no dupes). body is always selected
+    my %cols = map { $colmap->{$_} => 42 } ($icols ? split /\s*,\s*/, $icols : keys %$colmap), 'body' ;
 
-    $row->{pretty} = BeLaws::Format::ejustice_fgov::prettify($row->{body});
-    delete $row->{body} if $param->{'terse'};
 
+    # start of processing, main sql query ###############################################################################################
+
+    my $row = $dbh->selectrow_hashref("select ". join(',', keys %cols)  ." from staatsblad_$lang where docuid = ? limit 1",undef,$docuid);
+
+    # format the body into a prettyfied html body TODO: cache in db
+    $row->{pretty} = BeLaws::Format::ejustice_fgov::prettify($row->{body}) if exists $cols{pretty};
+
+    # delete the body if it was not requested
+    delete $row->{body} if $icols && $icols !~ m/body/;
+
+    # return the result in utf-8 encoded json
     return [ 200, [ 'Content-Type' => 'application/json; charset=utf-8' ], [ encode_json($row) ] ];
 };
 
