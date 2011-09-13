@@ -2,7 +2,7 @@ package BeLaws::API;
 use strict;
 use warnings;
 use Carp qw/croak/;
-use BeLaws::Driver::Storage::PostgreSQL;
+use BeLaws::Driver::Storage::PostgreSQL qw/$db/;
 use BeLaws::Query::ejustice_fgov::document;
 use BeLaws::Query::raadvanstate;
 use BeLaws::Query::juridat;
@@ -23,14 +23,17 @@ use encoding "utf-8"; # affects \w
 
 sub search {
     my $env = shift;
+    my $as_object = shift;
+
     my $dbh = $db->get_dbh();
 
     my $req = new Plack::Request($env);
     my $param = $req->parameters();
 
-    # untaint query variable
+    # untaint incoming variables
     my ($query) = ($param->{'q'} =~ m/^([\w\d\ :\-\/]+)$/)
                     or return [ 500, [ 'Content-Type' => 'text/plain' ], [ 'illegal query string' ] ];
+    my ($lang) = ($param->{'lang'} || 'nl' =~ m/(nl|fr)/);
 
     # trim so the split is more certain
     $query =~ s/^\s+|\s+$//g;
@@ -48,17 +51,18 @@ sub search {
     # warn "q is ".$param->{'q'}." filters are ".Dumper(\%filters);
 
     my $sql = join ' ', 
-            ("select docuid, docdate, ts_headline('public.belaws_nl',title, tsq, 'HighlightAll=TRUE') as title,",
-                "(select cat from __staatsblad_nl_docuid_per_cat where docuid = any(docuids)) as cat,",
-                "ts_rank_cd(fts, tsq) as rank",
+            ("select docuid, docdate, ts_headline('public.belaws_$lang',title, tsq, 'HighlightAll=TRUE') as title,",
+                "(select cat from __staatsblad_${lang}_docuid_per_cat where docuid = any(docuids)) as cat,",
+                "ts_rank_cd(fts, tsq) as rank,",
+                "'".$lang."'".' as lang',
                 "from (select docuid,docdate,title,tsq,fts",
-                        "from staatsblad_nl, plainto_tsquery('public.belaws_nl',?) as tsq",
+                        "from staatsblad_$lang, plainto_tsquery('public.belaws_$lang',?) as tsq",
                         "where fts @@ tsq)",
                 "as result order by rank desc");
 
     my $rows = $dbh->selectall_arrayref($sql, {Slice=>{}},$q);
 
-    return [ 200, [ 'Content-Type' => 'application/json; charset=utf-8' ], [ encode_json($rows) ] ];
+    return $as_object ? $rows : [ 200, [ 'Content-Type' => 'application/json; charset=utf-8' ], [ encode_json($rows) ]] ;
 };
 
 sub class_person {
@@ -67,13 +71,14 @@ sub class_person {
 
     my $req = new Plack::Request($env);
     my $param = $req->parameters();
+    my ($lang) = ($param->{'lang'} || 'nl' =~ m/(nl|fr)/);
 
     my $sql = join ' ', 
             ('select name,',
                     'count(*) as count,', 
                     'array_agg(docuid) as docuids',
-             'from (select name, unnest(staatsblad_nl_docuids) as docuid from person) as foo', 
-             "where docuid in (select docuid from staatsblad_nl where plainto_tsquery('public.belaws_nl',?) @@ fts)",
+             "from (select name, unnest(staatsblad_${lang}_docuids) as docuid from person) as foo", 
+             "where docuid in (select docuid from staatsblad_$lang where plainto_tsquery('public.belaws_$lang',?) @@ fts)",
              'group by name order by count desc');
 
     my $rows = $dbh->selectall_arrayref($sql, {Slice=>{}},$param->{'q'});
@@ -87,13 +92,14 @@ sub class_cat {
 
     my $req = new Plack::Request($env);
     my $param = $req->parameters();
+    my ($lang) = ($param->{'lang'} || 'nl' =~ m/(nl|fr)/);
 
     my $sql = join ' ', 
     ('select cat,',
             'count(*) as count,',
             'array_agg(docuid) as docuids', 
-     'from (select cat, unnest(docuids) as docuid from __staatsblad_nl_docuid_per_cat) as foo',
-     "where docuid in (select docuid from staatsblad_nl where plainto_tsquery('public.belaws_nl',?) @@ fts)",
+     "from (select cat, unnest(docuids) as docuid from __staatsblad_${lang}_docuid_per_cat) as foo",
+     "where docuid in (select docuid from staatsblad_$lang where plainto_tsquery('public.belaws_$lang',?) @@ fts)",
      'group by cat order by count desc');
 
     my $rows = $dbh->selectall_arrayref($sql, {Slice=>{}},$param->{'q'});
@@ -107,13 +113,14 @@ sub class_geo {
 
     my $req = new Plack::Request($env);
     my $param = $req->parameters();
+    my ($lang) = ($param->{'lang'} || 'nl' =~ m/(nl|fr)/);
 
     my $sql = join ' ', 
     ('select geo,',
             'count(*) as count,',
             'array_agg(docuid) as docuids', 
-     'from (select geo, unnest(docuids) as docuid from __staatsblad_nl_docuid_per_geo) as foo',
-     "where docuid in (select docuid from staatsblad_nl where plainto_tsquery('public.belaws_nl',?) @@ fts)",
+     "from (select geo, unnest(docuids) as docuid from __staatsblad_${lang}_docuid_per_geo) as foo",
+     "where docuid in (select docuid from staatsblad_$lang where plainto_tsquery('public.belaws_$lang',?) @@ fts)",
      'group by geo order by count desc');
 
     my $rows = $dbh->selectall_arrayref($sql, {Slice=>{}},$param->{'q'});
@@ -244,8 +251,6 @@ sub check_juridat {
     my $beq = new BeLaws::Query::juridat();
     my $res = $beq->request($id);
 
-
-    # use Encode;
     return [ 200, [ 'Content-Type' => 'application/json; charset=utf-8' ], [ encode_json({juridat => $res} ) ] ];
     # return [ 200, [ 'Content-Type' => 'text/xml; charset=utf-8' ], [ encode('utf8',$res) ] ];
 };
@@ -298,7 +303,7 @@ sub word_trends_per_month {
 
 
 
-### private functions ###############################################################################################################################
+### private/singleshot functions #############################################################################################################
 
 # sub seen_key_in_table_recently {
     # my ($dbh, $table, $key, $id) = @_;
@@ -307,7 +312,6 @@ sub word_trends_per_month {
 # }
 
 
-# private functions
 sub import_law_from_dir {
     my $dir = shift;
 
@@ -316,17 +320,16 @@ sub import_law_from_dir {
     }
 }
 
-sub import_law_from_file { 
-    my $file = shift;
-    my $dbh = $db->get_dbh();
-    my $fgov = new BeLaws::Query::ejustice_fgov::document;
-    my $obj = $fgov->parse_response($file, 'perl');
-    for(qw/title docuid pubid pubdate body plain effective/) {
-        unless ($obj->{$_}) { print "[$file] has no $_\n"; }
-    }
+# sub import_law_from_file { 
+    # my $file = shift;
+    # my $dbh = $db->get_dbh();
+    # my $fgov = new BeLaws::Query::ejustice_fgov::document;
+    # my $obj = $fgov->parse_response($file, 'perl');
+    # for(qw/title docuid pubid pubdate body plain effective/) {
+        # unless ($obj->{$_}) { print "[$file] has no $_\n"; }
+    # }
     # print "[".$obj->{docuid}."] inserting record into db with title ".$obj->{title}."\n";
-    $dbh->do('insert into belaws_docs (title,docuid,pubid,pubdate,source,body,plain,pages,pdf_href,effective) values (?,?,?,?,?,?,?,?,?,?)', undef,
-            @{$obj}{qw/title docuid pubid pubdate source body plain pages pdf_href effective/});
-}
-
+    # $dbh->do('insert into belaws_docs (title,docuid,pubid,pubdate,source,body,plain,pages,pdf_href,effective) values (?,?,?,?,?,?,?,?,?,?)', undef,
+            # @{$obj}{qw/title docuid pubid pubdate source body plain pages pdf_href effective/});
+# }
 42;

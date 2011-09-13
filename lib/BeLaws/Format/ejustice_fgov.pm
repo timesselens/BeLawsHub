@@ -33,6 +33,7 @@ sub prettify {
 
     my $text = $res2->{heads}->[3];
 
+    # try and replace references to internal article references
     sub to_article {
         my ($id, $art, $text) = @_;
         my $anchor = $id;
@@ -40,7 +41,7 @@ sub prettify {
         $id =~ s/\W/_/go;
         $id =~ s/_+/_/go;
         $id = lc $id;
-        $text =~ s/^\.\ //go;
+        $text =~ s/^[\.\ ]+//go;
         $text =~ s/<br \/><br \/>\s*$//io;
 
         my ($anchor_n) = ($anchor =~ m/^Art\.(.*)$/);
@@ -50,9 +51,11 @@ sub prettify {
     }
 
     $text =~ s@<a(?: href="[^"]+")? name="(Ar[^"]+)">[^<]+</a>\s*(?:<a\s*href="[^"]+">([^<]+)</a>)?(.*?)(?=(?:$|Brussel, \d+|<br /><br />[\s\t]*<a href="#L|<a href="#\1" name="[^"]+">))@to_article($1,$2,$3)@gie;
-
     $text =~ s@<a href="[^"]+" name="([^"]+)">([^<]+)\.?</a>\s*_?\s*(.*?)<br \/><br \/>@<h1><a name="$1" href="#$1">$2</a> $3</h1>@gi;
 
+
+
+    # try and replace docuid references
     sub to_link {
         my ($type, $docuid, $ref, $start) = @_;
         my $class = lc $type;

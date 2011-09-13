@@ -229,8 +229,8 @@ sub format {#{{{
 
     my $result = BeLaws::Format::ejustice_fgov::prettify($row->{body});
 
-    return [ 200, [ 'Content-Type' => 'text/html' ], [ $result ] ];
-    return [ 200, [ 'Content-Type' => 'application/json' ], [ encode_json({ docuid => $docuid, lang => $lang, html => $result }) ] ];
+    return [ 200, [ 'Content-Type' => 'text/html; charset=utf-8' ], [ encode('utf8',$result) ] ];
+    # return [ 200, [ 'Content-Type' => 'application/json' ], [ encode_json({ docuid => $docuid, lang => $lang, html => $result }) ] ];
 };#}}}
 
 sub info {#{{{
