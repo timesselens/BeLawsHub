@@ -3,6 +3,7 @@ var belaws = (function($) {
     var spincount = 0; // internal spincount locker
     var urlQuerySearch;
     var urlQueryDocUID;
+    var urlLang;
     var bodylayout;
     var centerlayout;
 
@@ -13,10 +14,16 @@ var belaws = (function($) {
     }// }}}
 
     return {
+        lang: {
+            search: { nl: 'BeLaws zoeken', fr: 'chercher BeLaws' },
+            inapp: { nl: 'Open in webapp', fr: 'Ouvrir dans webapp' }
+        },
         ui: {
             init: function() {// initializes the ui {{{
                 belaws.menu.init();
                 belaws.ui.bind_events();
+                belaws.page.set_form_on_cookie();
+                belaws.page.bind_lang_links();
                 bodylayout = $('body').css({ position:'absolute', height: '100%', width: '100%' }).layout({ // height: fix layout on jq 161
                     north: {
                         resizable: false,
@@ -134,10 +141,11 @@ var belaws = (function($) {
             },/*}}}*/
             show: function(docuid) { // show the docuid, push the state {{{
                 var query = $('input[name=q]').val().trim();
+                var lang = $('input[name=lang]').val().trim();
                 $('img.spinner').show(); spincount++;
                 $.ajax({
                     url: "/api/doc.json",
-                    data: { docuid: docuid, q: query },
+                    data: { docuid: docuid, q: query, lang: lang },
                     dataType: 'json',
                     success: function(json) {
                         $(".mainview").data('doc',json).empty().scrollTop(0);
@@ -154,9 +162,10 @@ var belaws = (function($) {
             },//}}}
             append_search_results: function() { // appends search results to top {{{
                 var query = $('input[name=q]').val().trim();
+                var lang = $('input[name=lang]').val().trim();
                 $.ajax({
                     url: "/api/search.json", 
-                    data: { q: query },
+                    data: { q: query, lang: lang },
                     dataType: 'json',
                     success: function(json) {
                         var h = [];
@@ -181,7 +190,7 @@ var belaws = (function($) {
                     }
                 });
             }, //}}}
-            filter_search_results: function() {
+            filter_search_results: function() {/*{{{*/
                 $("table#result").hide();
                 if(belaws.state.filter) {
                     $("#result tr.entry").hide(); 
@@ -192,12 +201,13 @@ var belaws = (function($) {
                     $("#result tr").show();
                 }
                 $("table#result").show();
-            },
+            },/*}}}*/
             append_person_class: function() { // ajax gets person names and appends {{{
                 var query = $('input[name=q]').val().trim();
+                var lang = $('input[name=lang]').val().trim();
                 $.ajax({
                     url: "/api/class/person.json",
-                    data: { q: query },
+                    data: { q: query, lang: lang },
                     dataType: 'json',
                     success: function(json) {
                         $('ul.panellist table.personlist').empty();
@@ -222,9 +232,10 @@ var belaws = (function($) {
             },// }}}
             append_cat_class: function() { // {{{
                 var query = $('input[name=q]').val().trim();
+                var lang = $('input[name=lang]').val().trim();
                 $.ajax({
                     url: "/api/class/cat.json",
-                    data: { q: query },
+                    data: { q: query, lang: lang },
                     dataType: 'json',
                     success: function(json) {
                         $('ul.panellist table.catlist').empty();
@@ -247,9 +258,10 @@ var belaws = (function($) {
             }, //}}}
             append_geo_class: function() { // {{{
                 var query = $('input[name=q]').val().trim();
+                var lang = $('input[name=lang]').val().trim();
                 $.ajax({
                     url: "/api/class/geo.json",
-                    data: { q: query },
+                    data: { q: query, lang: lang },
                     dataType: 'json',
                     success: function(json) {
                         $('ul.panellist table.geolist').empty();
@@ -285,6 +297,58 @@ var belaws = (function($) {
                 $(".mainview").empty();
             }//}}}
         },
+        page: {
+            set_input_on_url: function() {
+                var q = window.location.search.substr(1).match(/q=([^&]+)/)[1];
+                if(q) {
+                    $("input#q").val(unescape(q.replace(/\+/g,' ')));
+                }
+            },
+            set_form_on_cookie: function() {
+                try { var urilang = window.location.search.substr(1).match(/lang=(nl|fr)/)[1]; } catch (e) {}
+                var lang = urilang || $.cookie('pref_lang');
+                $('input#lang').val(lang);
+                $('input#search').attr('value',belaws.lang.search[lang]);
+                $('input#direct').attr('value',belaws.lang.inapp[lang]);
+            },
+            bind_lang_links: function() {
+                var loc = window.location.href;
+                $('p.lang a[rel=nl]').attr('href',loc.replace('lang=fr','lang=nl'));
+                $('p.lang a[rel=fr]').attr('href',loc.replace('lang=nl','lang=fr'));
+
+                $('p.lang a').bind('click',function(e) {
+                    //e.preventDefault;
+                    var lang = $(e.target).attr('rel');
+                    $('input#lang').attr('value',lang);
+                    $.cookie('pref_lang', lang, { path: '/', expires: 7 });
+                    $('input#search').attr('value',belaws.lang.search[lang]);
+                    $('input#direct').attr('value',belaws.lang.inapp[lang]);
+                    return true;
+                });
+            }
+        },
+        frontpage: {
+            init: function() {/*{{{*/
+                belaws.page.set_form_on_cookie();
+                belaws.page.bind_lang_links();
+
+                $('input#direct').bind('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var val = $('input#q').val();
+                    if(val) {
+                        window.location = '/app.html?q=' + val + '&lang=' + $('input#lang').val();
+                    }
+                });
+            }/*}}}*/
+        },
+        searchpage: {
+            init: function() {
+                belaws.page.set_form_on_cookie();
+                belaws.page.bind_lang_links();
+                belaws.page.set_input_on_url();
+            }
+        },
         menu: {/*{{{*/
             init: function() {
                 var $h1 = $('h1.dropdown');
@@ -314,9 +378,14 @@ var belaws = (function($) {
                     urlQuerySearch = window.location.toString().match(/\/s\/([^\/]*)/);
                     urlQueryDocUID = window.location.toString().match(/\/d\/([\w\d\-\/]+)/);
                 } 
+
+                if(params.lang) {
+                    urlLang = params.lang;
+                    $('input#lang').attr('value', params.lang);
+                }
                 
-                return {s: urlQuerySearch, d:urlQueryDocUID};
-            },//}}} 
+                return {s: urlQuerySearch, d:urlQueryDocUID, l: urlLang };
+            },//}}}  
             push_to_url: function(query) {//{{{
                 var query = query || $('input[name=q]').val().trim();
                 window.history.pushState({},'BeLawsHub', '/app.html?q=' + escape(query) );
@@ -392,14 +461,14 @@ var belaws = (function($) {
                 ].join(''));
             } // }}}
         },
-        helper: {
+        helper: {/*{{{*/
             intersect: function(a1,a2){ // TODO: use arguments
                 var u = {};
                 $.each([a1,a2],function(i,o){ $.each(o, function(j,p) { u[p] = (u[p] || 0) + 1;  }); });
                 var intersect = $.map(u, function(v,k) { if(v === 2) { return k; } } );
                 return intersect;
             }
-        }
+        }/*}}}*/
     };
 })(jQuery);
 

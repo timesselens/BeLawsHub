@@ -1,4 +1,188 @@
+/* topmenu ---------------------------------------------------------------------------------------- */
+div.topmenu {
+    height: 30px;
+    background: #eee;
+    color: black;
+    width: 100%;
+    overflow: hidden;
+    font: 14px arial,sans-serif;
+    background: #fff;
+    background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ededed));
+    background: -moz-linear-gradient(top,  #fff,  #ededed);
+    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ededed');
+}
+div.topmenu ul {
+    margin-left: 10px;
+}
+div.topmenu li {
+    float: left;
+}
 
+div.topmenu li a {
+    display: block;
+    border-top: 2px solid transparent;
+    line-height: 200%;
+    padding: 0 10px;
+    color: #666;
+    text-decoration: none;
+}
+
+div.topmenu li a[href="/index.html"] {
+    font-weight: bold;
+}
+div.topmenu li a:hover {
+    text-decoration: underline;
+}
+
+div.border {
+    display: table;
+    width: 100%;
+    height: 4px;
+    box-shadow: 0px 2px 2px #ddd;
+}
+
+div.border > div {
+    display: table-row;
+    width: 33%;
+    padding: 0;
+    margin: 0;
+}
+
+div.border div.r { width: 33%; display: table-cell; background-color: rgb(255,15,33); } 
+div.border div.y { width: 33%; display: table-cell; background-color: rgb(255,233,54); }
+div.border div.b { width: 33%; display: table-cell; background-color: black; }
+
+/* index ------------------------------------------------------------------------------------------ */
+
+body.index div#belaws-logo {
+    background-image: url('/images/belaws_logo_150.png');
+    background-position: center center;
+    background-repeat: no-repeat;
+    float: left;
+    width: 250px;
+    height: 150px;
+
+}
+
+body.index div#main {
+    width: 470px;
+    margin: 40px auto;
+    color: #000;
+}
+
+body.index input[name=q] {
+    height: 25px;
+    border: 1px solid #999;
+    font: 18px arial,sans-serif;
+    width: 450px;
+    outline: medium none;
+    padding: 5px 8px 0 6px;
+    vertical-align: top;
+    margin: 20px 0;
+}
+
+body.index div.logotxt {
+    font-family: arial, sans-serif;
+    font-size: 1em;
+    line-height: 120%;
+}
+
+body.index div.ltxt {
+    float: left;
+    width: 100px;
+    text-align: left;
+}
+
+body.index div.rtxt {
+    float: right;
+    width: 100px;
+    text-align: right;
+}
+
+body.index p.lang {
+    font: 13px arial,sans-serif;
+    margin-top: 60px;
+}
+body.index p.lang a {
+    text-decoration: none;
+}
+body.index p.lang a:hover {
+    text-decoration: underline;
+}
+/* search  ------------------------------------------------------------------------------------------ */
+body.search div#belaws-logo {
+    background-image: url('/images/belaws_logo_50.png');
+    background-position: center center;
+    background-repeat: no-repeat;
+    float: left;
+    width: 50px;
+    height: 50px;
+    margin: 10px 0 0 60px;
+
+}
+
+body.search div#main {
+    width: 100%;
+    background: #fff;
+    margin-top: 1px;
+    background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ededed));
+    background: -moz-linear-gradient(top,  #fff,  #ededed);
+    filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ededed');
+    height: 70px;
+    border-bottom: 1px solid #ddd;
+}
+
+body.search input[name=q] {
+    height: 25px;
+    border: 1px solid #999;
+    font: 17px arial,sans-serif;
+    line-height: 25px;
+    width: 450px;
+    outline: medium none;
+    padding: 1px 7px;
+    vertical-align: top;
+    margin: 20px 0 0 100px;
+    float: left;
+}
+
+body.search input[type=submit] {
+    margin: 20px 0 0 20px;
+}
+
+body.search div.logotxt {
+    display: none;
+}
+
+body.search p.lang {
+    font: 13px arial,sans-serif;
+    margin-top: 60px;
+}
+body.search p.lang a {
+    margin-left: 1em;
+    text-decoration: none;
+}
+body.search p.lang a:hover {
+    text-decoration: underline;
+}
+
+div#results {
+    margin-left: 210px;
+    margin-top: 20px;
+    font-size: 11px;
+    font-family: arial, sans-serif;
+    line-height: 16px;
+}
+
+div.result {
+    margin-bottom: 10px;
+}
+
+div#results h3 a { color: #1168CC; font-size: 14px; margin-bottom: 5px; }
+div#results p { max-width: 45em; }
+div#results b { font-weight: bold }
+
+
+/* app  ------------------------------------------------------------------------------------------ */
 h1.dropdown {
     cursor: pointer;
 }

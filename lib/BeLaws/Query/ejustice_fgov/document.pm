@@ -17,16 +17,19 @@ use File::Slurp qw/slurp/;
 
 sub new {
     my $class = shift;
+    my %attr = ref $_[0] eq 'HASH' ? %{$_[0]} : @_; # so both `f({a=>1})` and `f(a=>1)` are allowed
     my $self = {};
+    my $lang = (($attr{language} || '') =~ m/fr|french|fran?ais/) ? 'F' : 'N';
+
     $self->{base} = "http://www.ejustice.just.fgov.be";
     $self->{url}  = "/cgi_loi/loi_a1.pl";
     $self->{params} = {
         caller      => 'list',
-        la          => 'N',
+        la          => $lang,
         sql         => "dt+not+contains+'foo'",
-        language    => 'nl',
+        language    => $lang eq 'N' ? 'nl' : 'fr', 
         chercher    => 't',
-        fromtab     => 'wet_all'
+        fromtab     => $lang eq 'N' ? 'wet_all' : 'loi'
     };
 
     return bless ($self, $class);
@@ -58,19 +61,20 @@ sub parse_response {
                 $in !~ m/\n/ && -e $in ? slurp($in) :
                 $in;    
 
+    warn $html;
     return { error => 404, msg => 'remote side sais document not found' } if ($html =~ m#No article available with such references#);
 
-    my ($dossiernr) = ($html =~ m#<font color=Red>\s*<b>\s*Dossiernummer\s*:\s*</b>\s*</font>\s*([^<]+)\s*#smio);
+    my ($dossiernr) = ($html =~ m#<font color=Red>\s*<b>\s*(?:Dossiernummer|Dossier num&eacute;ro)\s*:\s*</b>\s*</font>\s*([^<]+)\s*#smio);
 
-    return { error => 500, msg => 'unable to parse dossiernummer from document' } unless $dossiernr;
+    return { error => 500, msg => 'unable to parse dossiernummer/dossier numero from document' } unless $dossiernr;
 
     my ($date,$title) = ($html =~ m#<th align\s*=\s*left\s*width=100%>\n</b><b>\s*([^\-]+)\s*\.\s*\-\s*([^<]+)\s*#smio);
-    my ($bron) = ($html =~ m#<font color=Red>\s*<b>\s*Bron\s*:\s*</b></b>\s*</font>\s*([^<]+)\s*#smio);
-    my ($pub) = ($html =~ m#<font color=Red>\s*<b>\s*Publicatie\s*:\s*</b>\s*</font>\s*([\d\-]+)\s*#smio);
-    my ($num) = ($html =~ m#<font color=red>\s*nummer\s*:\s*</font>\s*([^<]+)\s*#smio);
-    my ($blz) = ($html =~ m#<font color=red>\s*bladzijde\s*:\s*</font>\s*(\d+)\s*#smio);
-    my ($pdf_href) = ($html =~ m#<a href=([^\s]+) target=_parent>BEELD</a>#smio);
-    my ($inwerking) = ($html =~ m#<font color=Red>\s*<b>\s*Inwerkingtreding\s*:\s*</b>\s*</font>\s*([\w\-]+)\s*#smio);
+    my ($bron) = ($html =~ m#<font color=Red>\s*<b>\s*(?:Bron|Source)\s*:\s*</b></b>\s*</font>\s*([^<]+)\s*#smio);
+    my ($pub) = ($html =~ m#<font color=Red>\s*<b>\s*(?:Publicatie|Publication)\s*:\s*</b>\s*</font>\s*([\d\-]+)\s*#smio);
+    my ($num) = ($html =~ m#<font color=red>\s*(?:nummer|num&eacute;ro)\s*:\s*</font>\s*([^<]+)\s*#smio);
+    my ($blz) = ($html =~ m#<font color=red>\s*(?:bladzijde|page)\s*:\s*</font>\s*(\d+)\s*#smio);
+    my ($pdf_href) = ($html =~ m#<a href=([^\s]+) target=_parent>(?:BEELD|IMAGE)</a>#smio);
+    my ($inwerking) = ($html =~ m#<font color=Red>\s*<b>\s*(?:Inwerkingtreding|Entr&eacute;e\s*en\s*vigueur)\s*:\s*</b>\s*</font>\s*([\w\-]+)\s*#smio);
     my ($raadvanstate) = ($html =~ m#(http://www.raadvst-consetat.be/refLex/docs/[^\ ']+)#smio);
 
     # split
@@ -79,11 +83,14 @@ sub parse_response {
 
     my ($docdate) = ($dossiernr =~ m/(\d{4}-\d{2}-\d{2})/);
 
+    if ($pub =~ m/(\d{2})-(\d{2})-(\d{4})/) { $pub = "$3-$2-$1" }
+
     # cleanup 
     $title =~ s/[\r\n]*//g;
     
     # just for fun: (jan|feb|maart|april|mei|jun|jul|aug|sept|okt|nov)(uar|ustus|o|em)(i|ber)
     $title =~ s/^\s*\d+\s*(januari|februari|maart|april|mei|juni|juli|augustus|september|oktober|novemeber|december)\s*\d+\.?\s*\-?\s*//i;
+    $title =~ s/^\s*\d+\s*(janvier|f?vrier|mars|avril|mai|juin|juillet|ao?t|septembre|octobre|novemebre|decembre)\s*\d+\.?\s*\-?\s*//i;
     $num =~ s/&nbsp;//g;
     $bron =~ s/^\s*|\s*$//g;
   

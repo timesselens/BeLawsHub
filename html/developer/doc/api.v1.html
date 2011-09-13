@@ -230,6 +230,7 @@ table.changelog .date {color: darkgreen;}
 </div>
 <div class="linkmenu" style="display:none">
     <ul class="links">
+        <li class=""><span><a href="/index.html">Home<span>The homescreen of belaws</span></a></span></li>
         <li class=""><span><a href="/app.html">App Home<span>The homescreen of the user interface</span></a></span></li>
         <li class=""><span><a href="/statistics/index.html">Statistics<span>Database statistics</span></a></span></li>
         <li class=""><span><a href="/developer/doc/api.v1.html">Documentation<span>BeLaws APIv1 developer documentation</span></a></span></li>
@@ -377,8 +378,9 @@ and <em>ondernemingen</em> will both be marked when searching for <em>ondernemin
     <tbody>
         <tr><td>docuid</td><td>string</td><td><input name="docuid" value="1967-12-22/02" /></td><td>unique document identifier</td></tr>
         <tr><td>q</td><td>string</td><td><input name="q" value="reglement" /></td><td>used to hilight the body</td></tr>
-        <tr><td>terse</td><td>1 | 0</td><td><input name="terse" value="0" /></td><td>get terse output (ie: only body and title)</td></tr>
-        <tr><td>lang</td><td>nl | fr | de</td><td><input name="lang" value="nl"/></td><td>limit search to lang (not implemented yet)</td></tr>
+        <tr><td>attr</td><td>list</td><td><input name="attr" value="title, pretty" /></td><td>
+                possible attributes: body title docuid pubdate plain pubid source pages effective pretty</td></tr>
+        <tr><td>lang</td><td>nl|fr|de</td><td><input name="lang" value="nl"/></td><td>limit search to lang (not implemented yet)</td></tr>
     </tbody>
 </table>
 
@@ -392,6 +394,7 @@ and <code>docuid</code> being the most important properties.</p>
     source: null,
     body: "&lt;HTML VERSION...",
     plain: "...",
+    pretty: "&lt;article&gt;..."
     pubdate: "10-01-1968",
     pubid: "1967122203",
     docuid: "1967-12-22/02",

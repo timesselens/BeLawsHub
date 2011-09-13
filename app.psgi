@@ -106,7 +106,11 @@ builder {
         enable 'Plack::Middleware::Static', path => qr{^/(images|js|vendor|html|css|favicon\.ico)}, root => 'html/';
         mount "/app.html" => Plack::App::File->new(file => 'html/app.html'); 
         mount "/doc.html" => \&BeLaws::Frontend::doc;
-        mount "/" => Plack::App::File->new(file => 'html/app.html'); #catchall
+        mount "/" => builder {
+            enable '+WebHive::Middleware::Template', dirs => ['./html/'];
+            mount "/search.phtml" => \&BeLaws::Frontend::search;
+            mount "/" => Plack::App::File->new(file => 'html/index.html'); #catchall
+        };
    };
 
 };

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8" />
+  <title>BeLaws: interface naar geconsolideerde wetgeving van België</title>
+  <link rel="stylesheet" href="/vendor/layout-default.css" />
+  <link rel="stylesheet" href="/css/reset.css" />
+  <link rel="stylesheet" href="/css/design.css" />
+  <meta name = "robots" content = "index, follow"/>
+  <meta name="revisit-after" content="31 days" />
+  <meta name="language" content="nl,fr" /> 
+  <meta name="content-language" content="nl,fr" /> 
+  <meta http-equiv="content-language" content="nl,fr" />
+  <meta name="classification" content="database" />
+  <meta name="distribution" content="global" />
+  <meta name="copyright" content="iRail VZW 2011" />
+  <meta name="page-topic" content="belgisch staatsblad" />
+  <meta name="version" content="v0.04" />
+  <meta name="keywords" lang="nl" content="wet, opzoeken, belgisch, staatsblad, wetgeving, irail, belaws, koninklijk besluit" />
+  <meta name="description" content="BeLaws is een web 2.0 interface naar de geconsolideerde belgische wetgeving" lang="nl" />
+  <script src="/vendor/jquery-1.6.1.min.js" type="text/javascript" charset="utf-8"></script>
+  <script src="/vendor/jquery.cookie.js" type="text/javascript" charset="utf-8"></script>
+  <script src="/js/script.js" charset="utf-8"></script>
+  <script type="text/javascript" language="javascript" charset="utf-8">
+    $(function() { belaws.frontpage.init(); })
+  </script>
+</head>
+<body class="index">
+<div class="topmenu">
+    <ul class="links">
+        <li class=""><span><a href="/index.html" title="The homescreen of the user interface">Home</a></span></li>
+        <li class=""><span><a href="/app.html" title="BeLaws Web Application">Webapp</a></span></li>
+        <li class=""><span><a href="/statistics/index.html" title="Database statistics">Statistics</a></span></li>
+        <li class=""><span><a href="/developer/doc/api.v1.html" title="Documentation">Documentation</a></span></li>
+    </ul>
+</div>
+
+<div class="border">
+    <div>
+        <div class="b"></div>
+        <div class="y"></div>
+        <div class="r"></div>
+    </div>
+</div>
+
+<div id="main">
+    <center>
+        <div class="ltxt logotxt">Geconsolideerde<br>Wetgeving</div>
+        <div id="belaws-logo"></div>
+        <div class="rtxt logotxt">Législation<br>consolidée</div>
+        <form method="get" action="/search.phtml">
+            <div id="q_wrapper">
+            <input type="text" name="q" value="" id="q"/>
+            </div>
+            <input type="hidden" name="lang" value="nl" id="lang"/>
+            <input type="submit" value="BeLaws zoeken" id="search"/>
+            <input type="submit" value="Open in webapp" id="direct"/>
+        </form>
+        <p class="lang"><a href="/index.html?lang=nl" rel="nl">Nederlands</a> <a href="/index.html?lang=fr" rel="fr">Fran&ccedil;ais</a></p>
+        <br>
+        <p style="font-size: small">Copyright <a href="http://project.irail.be">iRail VZW</a></p>
+    </center>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+    var is_ssl = ("https:" == document.location.protocol);
+    var asset_host = is_ssl ? "https://s3.amazonaws.com/getsatisfaction.com/" : "http://s3.amazonaws.com/getsatisfaction.com/";
+    document.write(unescape("%3Cscript src='" + asset_host + "javascripts/feedback-v2.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+<script type="text/javascript" charset="utf-8">
+    var feedback_widget_options = {};
+
+        feedback_widget_options.display = "overlay";  
+        feedback_widget_options.company = "belawshub";
+        feedback_widget_options.placement = "right";
+        feedback_widget_options.color = "#222";
+        feedback_widget_options.style = "idea";
+
+    var feedback_widget = new GSFN.feedback_widget(feedback_widget_options);
+</script>
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-23301483-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+</body>
+</html>
