@@ -372,7 +372,7 @@ var belaws = (function($) {
                 var params = {};
                 for (var i=0; i < searchpairs.length; i++) {
                     var pair = searchpairs[i].split(/=/);
-                    params[pair[0]] = pair[1];
+                    params[pair[0]] = decodeURIComponent(pair[1]);
                 }
                 if(params.q) {
                     urlQuerySearch = params.q ? [null, params.q] : null; // expects array
