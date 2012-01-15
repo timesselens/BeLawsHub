@@ -122,6 +122,9 @@ var belaws = (function($) {
             render_doc: function() {/*{{{*/
                 var $v = $('.mainview').empty();
                 var doc = $v.data('doc');
+                try { var urilang = window.location.search.substr(1).match(/lang=(nl|fr)/)[1]; } catch (e) {}
+                var lang = urilang || $.cookie('pref_lang');
+
                 $v.append([
                           '<div class="header">',
                             '<dl>',
@@ -130,7 +133,7 @@ var belaws = (function($) {
                             '</dl>',
                             '<ul class="actions">',
                                 '<li><span class="viewsource"><a href="#">view source</a></span>',
-                                '<li><span class="doclink"><a target="_blank" href="/doc.html?d=',doc.docuid,'">open in tab</a><span></li>',
+                                '<li><span class="doclink"><a target="_blank" href="/doc.html?d=',doc.docuid,'&lang=',lang,'">open in tab</a><span></li>',
                             '</ul>',
                           '</div>',
                           '<div style="clear:both"></div>',
