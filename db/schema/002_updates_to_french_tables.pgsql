@@ -21,15 +21,15 @@ begin;
         effective varchar(12)
     );
 
-    create text search configuration public.belaws_fr ( copy = pg_catalog.french );
+    -- create text search configuration public.belaws_fr ( copy = pg_catalog.french );
 
     -- create text search dictionary belaws_nl_syn (TEMPLATE = synonym, SYNONYMS = belaws_nl_syn );
 
-    create text search dictionary french_ispell( TEMPLATE = ispell, DictFile = french, AffFile = french, StopWords = french);
-    create text search dictionary french_stem ( TEMPLATE = snowball, Language = french, StopWords = french );
+    -- create text search dictionary french_ispell( TEMPLATE = ispell, DictFile = french, AffFile = french, StopWords = french);
+    -- create text search dictionary french_stem ( TEMPLATE = snowball, Language = french, StopWords = french );
 
     alter text search configuration belaws_fr alter mapping for asciiword, asciihword, hword_asciipart, word, hword, hword_part WITH french_ispell, french_stem;
-    alter text search configuration belaws_fr drop mapping for email, url, url_path, sfloat, float;
+    --alter text search configuration belaws_fr drop mapping for url, url_path, sfloat, float;
 
 
     create or replace function generate_tsvector_fr() returns trigger as $$
