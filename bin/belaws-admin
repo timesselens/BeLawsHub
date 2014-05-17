@@ -1,0 +1,194 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use JSON;
+use Data::Dumper;
+use Data::Format::Pretty qw(format_pretty print_pretty ppr);
+use BeLaws::Query::ejustice_fgov::document;
+use Plack::Handler::CLI;
+use App::Rad;
+use Capture::Tiny ':all';
+use DBI;
+use FindBin qw/$RealBin/;
+use lib "$RealBin/../lib";
+use lib "$RealBin/../vendor";
+use WebHive::Log qw/warn/;
+our $app;
+require "$RealBin/../app.psgi";
+
+# {{{ setup
+our $dbh = DBI->connect('dbi:Pg:');
+sub setup { shift->register_commands( { -ignore_regexp => qr/Dumper|to_json|from_json|encode_json|decode_json|Json|Obj|pretty|ppr|add|builder|enable|enable_if|mount|warn|capture|put|post|namespace|tee|falltrough|router|get/ } ); } 
+# }}}
+
+sub ls :Help('list db all resources') {#{{{
+    printf "# ENV: PGHOST: %s PGDATABASE: %s PGUSER: %s\n", $ENV{PGHOST}, $ENV{PGDATABASE}, $ENV{PGUSER};
+
+    my $ping = $dbh->ping();
+    printf "# db %s ping %s\n ",$ENV{PGHOST}, $ping;
+
+    my $res = $dbh->selectall_arrayref(qq@
+        SELECT 
+            nspname || '.' || relname AS "relation",
+            pg_size_pretty(pg_relation_size(C.oid)) AS "size",
+            (SELECT ARRAY(
+                SELECT attname
+                FROM   pg_attribute
+                WHERE  attrelid = (nspname || '.' || relname)::regclass
+                    AND    attnum > 0
+                    AND    NOT attisdropped
+                ORDER  BY attnum
+            )) as columns
+        FROM pg_class C
+        LEFT JOIN pg_namespace N ON (N.oid = C.relnamespace)
+        WHERE nspname NOT IN ('pg_catalog', 'information_schema', 'pg_toast')
+        ORDER BY pg_relation_size(C.oid) DESC
+        LIMIT 20
+    @, {Slice=>{}});
+
+    ppr $res, { table_column_orders => [[qw/relation size columns/]] } ;
+    return "";
+}#}}}
+
+sub triggers :Help('show list of triggers in the database') {
+    my $triggers = $dbh->selectall_arrayref(qq/
+    SELECT 
+      p.proname as name,
+      p.prosrc as source
+    FROM pg_catalog.pg_proc p
+         LEFT JOIN pg_catalog.pg_namespace n ON n.oid = p.pronamespace
+         LEFT JOIN pg_catalog.pg_language l ON l.oid = p.prolang
+    WHERE pg_catalog.pg_function_is_visible(p.oid)
+          AND n.nspname <> 'pg_catalog'
+          AND n.nspname <> 'information_schema'
+    ORDER BY 1, 2/, {Slice => {}});
+
+    my $i = 0;
+    foreach my $row (@$triggers) {
+        $i++;
+        print $row->{name}."\n";
+        open my $fh, "> /tmp/$$.trigger.$i";
+        print $fh $row->{source};
+        close $fh;
+        print `/usr/local/bin/pygmentize -f terminal -l postgresql /tmp/$$.trigger.$i`;
+
+    }
+    `rm -f /tmp/$$.trigger*`;
+    return "";
+
+}
+sub stat :Help('get a bearing on the number on documents') {#{{{
+    my ($nl) = $dbh->selectrow_array('select count(docuid) from staatsblad_nl');
+    my ($fr) = $dbh->selectrow_array('select count(docuid) from staatsblad_fr');
+    my ($nl_date) = $dbh->selectrow_array('select max(docdate::date) from staatsblad_nl');
+    my ($fr_date) = $dbh->selectrow_array('select max(docdate::date) from staatsblad_fr');
+
+    ppr [
+        {_ => "number of records", staatsblad_nl => $nl, staatsblad_fr => $fr},
+        {_ => "last docdate", staatsblad_nl => $nl_date, staatsblad_fr => $fr_date},
+    ];
+    
+    return ""
+}#}}}
+sub check :Help('check some stuff prior to importing a database') { # {{{
+
+    my ($sharedir) = map { chomp; $_ } `pg_config --sharedir`;
+    ppr [ { _sharedir => "$sharedir/tsearch", 
+            'dutch.stop' => -e "$sharedir/tsearch_data/dutch.stop" ? "OK" : "NOT FOUND" ,
+            'dutch.dict' => -e "$sharedir/tsearch_data/dutch.dict" ? "OK" : "NOT FOUND" ,
+            'dutch.affix' => -e "$sharedir/tsearch_data/dutch.affix" ? "OK" : "NOT FOUND" ,
+            'french.stop' => -e "$sharedir/tsearch_data/french.stop" ? "OK" : "NOT FOUND" ,
+            'french.dict' => -e "$sharedir/tsearch_data/french.dict" ? "OK" : "NOT FOUND" ,
+            'french.affix' => -e "$sharedir/tsearch_data/french.affix" ? "OK" : "NOT FOUND" ,
+        }];
+
+    print "please copy missing files from db/tsearch_data to $sharedir/tsearch\n\n";
+
+    return ""
+} # }}}
+sub import :Help('import html file and try parsing with B::Q::ejustice_fgov::document') {
+    my $cli = shift;
+    my $dir = $cli->options->{dir} || '';
+    my $file = $cli->options->{file} || '';
+    return "usage: belaws-admin import [--dir=/path/to/dir] [--file=/path/to/file]\n" unless -d $dir || -e $file;
+
+    for my $htmlfile ($file || '', $dir ? glob("$dir/*.html") : '') {
+        next unless -e $htmlfile;
+
+        my $fgov = new BeLaws::Query::ejustice_fgov::document;
+        my $obj = $fgov->parse_response($htmlfile, 'perl');
+        # ppr $obj;
+        my $exit = 0;
+        for(qw/title docuid pubid pubdate body plain effective/) {
+            unless ($obj->{$_}) { print "[$file] could not find $_\n"; $exit = 1}
+        }
+        exit if $exit;
+
+        print "[".$obj->{docuid}."] inserting record into db with title ".$obj->{title}."\n";
+        $dbh->do('insert into belaws_docs (title,docuid,pubid,pubdate,source,body,plain,pages,pdf_href,effective) values (?,?,?,?,?,?,?,?,?,?)', undef,
+                @{$obj}{qw/title docuid pubid pubdate source body plain pages pdf_href effective/});
+    }
+}
+
+sub api :Help('call the local api') {
+    my $handle = new Plack::Handler::CLI(need_headers => 0);
+    $handle->run($app,["http://localhost/api/internal".(shift @ARGV), @ARGV]); # note localhost is magic, no port is needed as the server is spun internally for this
+    print "\n"; return "";
+}
+
+sub seed :Help('list candidate docuids for fetching') {
+    my $docuids_nl = $dbh->selectcol_arrayref('select docuid from __staatsblad_nl_docuid_in_body where docuid not in (select docuid from staatsblad_nl)');
+    my $docuids_fr = $dbh->selectcol_arrayref('select docuid from __staatsblad_fr_docuid_in_body where docuid not in (select docuid from staatsblad_fr)');
+    my $docuids = [@$docuids_nl, @$docuids_fr];
+    print "$_\n" foreach @$docuids;
+}
+sub rehash :Help('rehash the tables in the db') {
+    $dbh->do('select rehash_all()');
+}
+
+sub scrape :Help('scrape request to API') {
+    my $cli = shift;
+    my $docuid = $cli->argv->[0];
+    return "usage: belaws-admin scrape YYYY-MM-DD/NN" unless $docuid && $docuid =~ m/^\d{4}-\d{2}-\d{2}\/\d+$/;
+
+    my $handle = new Plack::Handler::CLI(need_headers => 0);
+    # note localhost is magic, no port is needed as the server is spun internally for this
+    foreach my $url (map { "http://localhost/api/internal/$_/staatsblad.json"} (qw/fetch parse resolve/)) {
+        foreach my $lang (qw/nl fr/) {
+            print STDERR "fetching $url?docuid=$docuid&lang=$lang\n";
+            my ($stdout, $stderr, $exit) = capture { $handle->run($app,["$url?docuid=$docuid&lang=$lang"]) };
+            if($stdout =~ m/scrape returned empty document/) { print "FAIL\n"; exit(-1) }
+            my $json = decode_json($stdout);
+            delete $json->{see_also};
+            delete $json->{diff};
+            ppr $json;
+            print "$stderr\n";
+        }
+    }
+    print "\n";
+
+    return "";
+}
+
+sub incoming :Help('show raw html from fetch') {
+    my $cli = shift;
+    my $docuid = $cli->argv->[0];
+
+    if (!$docuid || $docuid !~ m/^\d{4}-\d{2}-\d{2}\/\d+$/) {
+        my $latest = $dbh->selectall_arrayref("select id,ts,parser,lang,uid from incoming where body != '' order by ts desc limit 10",{Slice=>{}});
+        ppr $latest;
+        return "usage: belaws-admin incoming YYYY-MM-DD/NN";
+    }
+
+    my ($body) = $dbh->selectrow_array("select body from incoming where uid = ? and body != ''",undef,$docuid);
+    `mkdir -p /tmp/$docuid`;
+    open my $fh, '>', "/tmp/$docuid.raw.html";
+    print $fh $body;
+    close $fh;
+    system("/usr/local/bin/pygmentize -f terminal /tmp/$docuid.raw.html");
+    `rm -rf /tmp/$docuid` if $docuid =~ m/^\d{4}-\d{2}-\d{2}\/\d+$/;
+
+}
+
+
+App::Rad->run();
