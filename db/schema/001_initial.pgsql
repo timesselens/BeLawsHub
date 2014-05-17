@@ -9,7 +9,7 @@ begin;
         title text,
         body text,
         plain text,
-        fts ts_vector,
+        fts tsvector,
         markup text,
         pubid varchar(15),
         pubdate date,
@@ -81,7 +81,7 @@ begin;
                 array_agg(docuid) as docuids
         from staatsblad_nl where source <> '' group by trim(source) having count(*) > 1 order by count desc;
 
-    create language plpgsql;
+    --create language plpgsql;
 
     create or replace function rehash_all() returns void as $$
         begin
@@ -276,10 +276,10 @@ begin;
 
 
 
-    select * from
-        _series_date_staatsblad_nl d,
-        (select * from (select words,unnest(staatsblad_nl_docuids) as docuid from words) as foo, staatsblad_nl b where foo.docuid = b.docuid) as fnord 
-    group by words,docdate order by docdate;
+    --select * from
+    --    _series_date_staatsblad_nl d,
+    --    (select * from (select words,unnest(staatsblad_nl_docuids) as docuid from words) as foo, staatsblad_nl b where foo.docuid = b.docuid) as fnord 
+    -- group by d, words,docdate order by docdate;
 
 
     --------------------------------------------------------------------------------------------------------------

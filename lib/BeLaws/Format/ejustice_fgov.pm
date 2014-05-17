@@ -20,6 +20,8 @@ sub prettify {
     $html = HTML::Tidy->new->clean($html);
     # warn '$html: %o', $html;
 
+    $html =~ s@<td align=left , width=100%>@<td>@g;
+
     my $s = scraper {
         process 'table[bgcolor="#bcd9ff"]', "meta_tables[]" => scraper {
             process 'a' => 'links[]' => { text => 'TEXT', link => '@href' };

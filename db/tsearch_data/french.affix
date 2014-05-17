@@ -162,8 +162,8 @@ flag *C:			# préfixe latin 'con-'
 	[R]			>	COR
 
 flag *D:			# préfixe 'dé-'
-    	[^aàâeèéêiîoôuh]	>	Dé
-	[aàâeèéêiîoôuh]		>	DéS
+    	[^aàâeèéêiîoôuh]	>	De
+	[aàâeèéêiîoôuh]		>	DeS
 
 flag *N:			# préfixe latin 'dis-'
 	[^F]			>	DIS
@@ -172,19 +172,19 @@ flag *N:			# préfixe latin 'dis-'
 flag *E:			# préfixe latin 'ex-'
 				# verbes et non-verbes
 	[^FLMNRV]		>	EX	# exceptions pour C,P,T !
-	[LMNRV]			>	é
+	[LMNRV]			>	e
 	[F]			>	EF
 
 #flag *Y:			# préfixe latin 'ex-'
 				# non-verbes uniquement
 #	[^FLMNRV]		>	D'EX	# exceptions pour C,P,T !
-#	[LMNRV]			>	D'é
+#	[LMNRV]			>	D'e
 #	[F]			>	D'EF
 
 #flag  Z:			# préfixe latin 'ex-'
 				# non-verbes uniquement
 #	[^FLMNRV]		>	L'EX	# exceptions pour C,P,T !
-#	[LMNRV]			>	L'é
+#	[LMNRV]			>	L'e
 #	[F]			>	L'EF
 
 flag *I:			# les deux préfixes latins 'in-'
@@ -210,17 +210,17 @@ flag *I:			# les deux préfixes latins 'in-'
 #	[IR]			>	L'IR
 
 flag *P:			# préfixe 'pré-'
-	.			>	PRé	# exceptions !
+	.			>	PRe	# exceptions !
 
 flag *R:			# préfixes 're-' et 'ré-'
 				# ('é' devant V et 'e' devant C)
 	[^aàâeèéêiîoôuhs]	>	RE
-	[aàâeèéêiîoôuh]		>	Ré
+	[aàâeèéêiîoôuh]		>	Re
 	[S]			>	RES
 
 flag *O:			# préfixes 're-' et 'ré-'
 				# ('é' devant C et élision devant V)
-	[^aàâeèéêiîoôuhs]	>	Ré
+	[^aàâeèéêiîoôuhs]	>	Re
 	[aàâeèéêiîoôuh]		>	R
 
 flag *W:			# préfixe latin 'sub-'
@@ -262,7 +262,7 @@ flag *W:			# préfixe latin 'sub-'
 #    	[aàâeèéêiîoôuh] 	>	M'	# tu m'aides
 
 #flag *t:			# élision du pronom 'te'
-#    	[aàâeèéêiîoôuh] 	>	T'	# je t'énerve
+#    	[aàâeèéêiîoôuh] 	>	T'	# je t'enerve
 				# pose problème : vous t'énerviez ???
 				# moins ennuyeux que 'l'éléphants' cpdt
 				# et peu probable
@@ -328,19 +328,19 @@ flag  b:			# préfixe latin 'a(d)-'
 #flag *e:			# préfixe latin 'ex-'
 				# verbes transitifs uniquement
 #	[^FLMNRV]		>	L'EX	# exceptions pour C,P,T !
-#	[LMNRV]			>	L'é
+#	[LMNRV]			>	L'e
 #	[F]			>	L'EF
 #	[^FLMNRV]		>	M'EX	# exceptions pour C,P,T !
-#	[LMNRV]			>	M'é
+#	[LMNRV]			>	M'e
 #	[F]			>	M'EF
 #	[^FLMNRV]		>	T'EX	# exceptions pour C,P,T !
-#	[LMNRV]			>	T'é
+#	[LMNRV]			>	T'e
 #	[F]			>	T'EF
 
 #flag  f:			# préfixe latin 'ex-'
 				# verbes uniquement
 #	[^FLMNRV]		>	J'EX	# exceptions pour C,P,T !
-#	[LMNRV]			>	J'é
+#	[LMNRV]			>	J'e
 #	[F]			>	J'EF
 
 
@@ -380,14 +380,14 @@ flag *F:			# gestion du masculin et du pluriel à
 	[^SXZ]			>	S
 
 	# Voyelle + e/ë :
-        é E                     >       -éE,é   # = -E (employée)
+        é E                     >       -eE,e   # = -E (employee)
 	I E			>	-IE,I	# = -E (endolorie)
-	ï E			>	-ïE,ï	# = -E (ouïe)
+	ï E			>	-iE,i	# = -E (ouie)
 	[^GQ] U E		>	-UE,U	# = -E (bienvenue)
 	[^GQ] U E		>	-E,S
 	[éIï] E			>	-E,S
-	U ë			>	-Uë,U	# = -ë (aiguë)
-	U ë			>	-ë,S
+	U ë			>	-Ue,U	# = -e (aigue)
+	U ë			>	-e,S
 
 	# Finale -(c)que
 	[^C] Q U E		>	-QUE,C	# caduque
@@ -402,8 +402,8 @@ flag *F:			# gestion du masculin et du pluriel à
 	# Finale -che
 	[^è] C H E		>	-CHE,C	# = -HE (blanche)
 	[^è] C H E		>	-HE,S
-	è C H E			>	-èCHE,EC	# sèche
-	è C H E			>	-èCHE,ECS
+	è C H E			>	-eCHE,EC	# seche
+	è C H E			>	-eCHE,ECS
 
 	# Consonne c + e
 	C E			>	-CE,X	# douce
@@ -417,36 +417,36 @@ flag *F:			# gestion du masculin et du pluriel à
 	F F E			>	-FE,S
 
 	# Consonne(s) (l)l + e
-	[EIU] L L E		>	-LLE,L	# = -LE (éventuelle, nulle
+	[EIU] L L E		>	-LLE,L	# = -LE (eventuelle, nulle
 	[EIU] L L E		>	-LE,S	#	 pareille, gentille)
 	A L E			>	-LE,L	# = -E (buccale)
 	A L E			>	-LE,UX
-	è L E			>	-èLE,EL	# fidèle
-	è L E			>	-èLE,ELS
+	è L E			>	-eLE,EL	# fidele
+	è L E			>	-eLE,ELS
 	[IOUû] L E		>	-LE,L	# = -LE (subtile, espagnole,
 	[IOUû] L E		>	-E,S	# veule, saoule)
 
 	# Consonne(s) (n)n + e
 	[AEO] N N E		>	-NNE,N	# = -NE (paysanne, citoyenne,
 	[AEO] N N E		>	-NE,S	# canadienne, wallonne)
-	[AIU] N E		>	-NE,N	# = -NE (américaine, voisine,
+	[AIU] N E		>	-NE,N	# = -NE (americaine, voisine,
 	[AIU] N E		>	-E,S	# opportune, romane)
-	I G N E			>	-GNE,N	# bénigne, maligne
+	I G N E			>	-GNE,N	# benigne, maligne
 	I G N E			>	-GNE,NS
 
 	# Consonne r + e
-	è R E			>	-èRE,ER	# dernière
-	è R E			>	-èRE,ERS
-	[IUûY] R E		>	-RE,R	# = -E (supérieure, noire)
+	è R E			>	-eRE,ER	# derniere
+	è R E			>	-eRE,ERS
+	[IUûY] R E		>	-RE,R	# = -E (superieure, noire)
 	[IUûY] R E		>	-E,S
 
 	# Consonne(s) (s)s + e
 	[EO] U S E		>	-SE,X	# heureuse, jalouse
 						# exception : andalouse/andalou
-	[^US] S E		>	-SE,S	# = -E (précise, québécoise)
+	[^US] S E		>	-SE,S	# = -E (precise, quebecoise)
 	[^EO] U S E		>	-SE,S	# recluse
 	O U S S E		>	-SSE,X	# rousse
-	[^U] S S E		>	-SSE,S	# = -SE (basse, épaisse,
+	[^U] S S E		>	-SSE,S	# = -SE (basse, epaisse,
 						# métisse)
 
 	# Consonne(s) (t)t + e
@@ -454,13 +454,13 @@ flag *F:			# gestion du masculin et du pluriel à
 	T T E 			>	-TE,S
 	[^èT] T E		>	-TE,T	# idiote
 	[^èT] T E		>	-E,S
-	è T E			>	-èTE,ET	# discrète
-	è T E			>	-èTE,ETS
+	è T E			>	-eTE,ET	# discrete
+	è T E			>	-eTE,ETS
 
 	# Consonne v + e
-	è V E			>	-èVE,EF	# brève
-	è V E			>	-èVE,EFS
-	[IïU] V E		>	-VE,F	# vive, naïve, veuve
+	è V E			>	-eVE,EF	# breve
+	è V E			>	-eVE,EFS
+	[IïU] V E		>	-VE,F	# vive, naive, veuve
 	[IïU] V E		>	-VE,FS
 
 flag *G:			# mots en -eur et en -al qui font le pluriel
@@ -490,7 +490,7 @@ flag *G:			# mots en -eur et en -al qui font le pluriel
 flag *h:			# verbes premier groupe
 				# CHANTER, MANGER, PAYER, APPELER, JETER
 
-	ER			>	-ER,E #infinitif passé
+	ER			>	-ER,E #infinitif passe
 				#Indicatif present  je / il idem infinitif passé sauf PAYER
 	YER			>	-YER,IE # je paie
 	ER			>	-ER,ES #tu
@@ -609,10 +609,10 @@ flag *h:			# verbes premier groupe
 				#Impératif présent : id. indicatif présent
 				#Impératif passé : id. participe passé
 				#participes
-	[^G]ER			>	-ER,ANT	#présent
-	[G]ER			>	-ER,EANT	#présent
-	ER			>	-ER,EE	#passé féminin
-	ER			>	-ER,EES	#passé féminin pl.
+	[^G]ER			>	-ER,ANT	#present
+	[G]ER			>	-ER,EANT	#present
+	ER			>	-ER,EE	#passe feminin
+	ER			>	-ER,EES	#passe feminin pl.
 	ER			>	-ER,EUR
 	ER			>	-ER,EURS
 	ER			>	-ER,EUSE
@@ -625,7 +625,7 @@ flag *h:			# verbes premier groupe
 
 
 # Verbe 2nd groupe : FINIR
-	IR			>	-IR,I		#infinitif passé
+	IR			>	-IR,I		#infinitif passe
 				#Indicatif present
 	IR			>	-IR,IS		# je/tu finis
 	IR			>	-IR,IT		# il finit
@@ -642,8 +642,8 @@ flag *h:			# verbes premier groupe
 
 				#passé simple
 							#je,tu,il idem ind.présent
-	IR			>	-IR,IMES	#nous finîmes
-	IR			>	-IR,ITES	#vous finîtes
+	IR			>	-IR,IMES	#nous finimes
+	IR			>	-IR,ITES	#vous finites
 	IR			>	-IR,IRENT	#ils finirent
 
 				#futur simple
@@ -1524,9 +1524,9 @@ flag *u:
 	I E N S			>	-S,NENT
 	I E N S			>	-S,NE
 	I E N S			>	-S,NES
-	I E R S			>	-ERS,èRENT
-	I E R S			>	-ERS,èRE
-	I E R S			>	-ERS,èRES
+	I E R S			>	-ERS,eRENT
+	I E R S			>	-ERS,eRE
+	I E R S			>	-ERS,eRES
 	[^I] E N S		>	-S,TENT
 	[^I] E N S		>	-S,TE
 	[^I] E N S		>	-S,TES
@@ -1546,15 +1546,15 @@ flag *u:
 	O I S			>	-S,VE		# 'devoir'
 	O I S			>	-S,VES
 
-	O î S			>	-OîS,OISSENT	# 'croître'
-	O î S			>	-OîS,OISSE
-	O î S			>	-OîS,OISSES
+	O î S			>	-OiS,OISSENT	# 'croitre'
+	O î S			>	-OiS,OISSE
+	O î S			>	-OiS,OISSES
 
 	[PU] S			>	-S,ENT		# P pour la famille
 	[PU] S			>	-S,E		# de rompre
 	[PU] S			>	-S,ES
 
-	[FVP] [AE] U X		>	-X,T		# sauf 'prévaloir'
+	[FVP] [AE] U X		>	-X,T		# sauf 'prevaloir'
 	V A U X			>	-UX,LENT
 	V A U X			>	-UX,ILLE
 	V A U X			>	-UX,ILLES
@@ -1620,7 +1620,7 @@ flag *g:        # Verbes de la famille de 'prendre'
 
 		# Verbes de la famille 'connaître', 'paraître', 'naître'
 		# IND et SUBJ PR
-	[^T] [NR] A I S		>	-IS,îT
+	[^T] [NR] A I S		>	-IS,iT
 	[^T] [NR] A I S		>	SENT
 	[^T] [NR] A I S		>	SE
 	[^T] [NR] A I S		>	SES
@@ -1632,7 +1632,7 @@ flag *g:        # Verbes de la famille de 'prendre'
 	T R A I S		>	-S,ES
 
 		# Verbes de la famille de 'plaire'
-	P L A I S		>	-IS,îT
+	P L A I S		>	-IS,iT
 	P L A I S		>	ENT
 	P L A I S		>	E
 	P L A I S		>	ES
@@ -1644,16 +1644,16 @@ flag *g:        # Verbes de la famille de 'prendre'
 	T A I S			>	ES
 
 		# 'paître' et 'repaître'
-	P A I S			>	-AIS,AîT
+	P A I S			>	-AIS,AiT
 	P A I S			>	SENT
 	P A I S			>	SE
 	P A I S			>	SES
 
 		# Verbe 'haïr'
 	H A I S			>	-S,T
-	H A I S			>	-IS,ïSSENT
-	H A I S			>	-IS,ïSSE
-	H A I S			>	-IS,ïSSES
+	H A I S			>	-IS,iSSENT
+	H A I S			>	-IS,iSSE
+	H A I S			>	-IS,iSSES
 
 		# Verbe 'savoir'
 	S A I S			>	-S,T
@@ -1743,14 +1743,14 @@ flag *v:
 	A I S			>	-S,T
 	[^çE] A I S		>	-AIS,IONS
 	[^çE] A I S		>	-AIS,IEZ
-	ç A I S			>	-çAIS,CIONS	# 'placer'
-	ç A I S			>	-çAIS,CIEZ
+	ç A I S			>	-cAIS,CIONS	# 'placer'
+	ç A I S			>	-cAIS,CIEZ
 	E A I S			>	-EAIS,IONS	# 'manger'
 	E A I S			>	-EAIS,IEZ
 	A I S			>	-S,ENT
 	A I S			>	-AIS,ONS
 	[^çE] A I S		>	-AIS,EZ
-	ç A I S			>	-çAIS,CEZ
+	ç A I S			>	-cAIS,CEZ
 	E A I S			>	-AIS,Z
 	A I S			>	-IS,NT
 flag *c:				# adjectif verbal accordé
@@ -1784,47 +1784,47 @@ flag *d:				# V du 3e gp sur le modèle de 'faire'
 flag *w:
 	A I			>	-I,S
 	A I			>	-AI,A	# = -I
-	A I			>	-AI,âMES
-	A I			>	-AI,âTES
-	[^çE] A I		>	-AI,èRENT
-	ç A I			>	-çAI,CèRENT
-	E A I			>	-EAI,èRENT
+	A I			>	-AI,AMES
+	A I			>	-AI,ATES
+	[^çE] A I		>	-AI,eRENT
+	ç A I			>	-cAI,CeRENT
+	E A I			>	-EAI,eRENT
 	A I			>	-I,SSE
 	A I			>	-I,SSES
-	A I			>	-AI,âT
+	A I			>	-AI,AT
 	A I			>	-I,SSIONS
 	A I			>	-I,SSIEZ
 	A I			>	-I,SSENT
 
 					# pour tous les V des 2e et 3e gp
-	S			>	-S,T	# crée des doublons avec le
+	S			>	-S,T	# cree des doublons avec le
 						# PR des verbes du 2e gp !
 	S			>	-S,RENT
 
 					# V du 2e gp et certains du 3e gp
-	I S			>	-IS,îMES
-	I S			>	-IS,îTES
-	I S			>	-IS,îT
-	[IUû] S			>	SE	# crée des doublons avec le
+	I S			>	-IS,iMES
+	I S			>	-IS,iTES
+	I S			>	-IS,iT
+	[IUû] S			>	SE	# cree des doublons avec le
 						# PR des verbes du 2e gp !
 	[IUû] S			>	SES	# idem
 	[IUû] S			>	SIONS	# idem
 	[IUû] S			>	SIEZ	# idem
 	[IUû] S			>	SENT	# idem
 
-	U S			>	-US,ûMES
-	U S			>	-US,ûTES
-	U S			>	-US,ûT
+	U S			>	-US,uMES
+	U S			>	-US,uTES
+	U S			>	-US,uT
 
 	û S			>	-S,MES
 	û S			>	-S,TES
 
 					# V du 3e gp
-	I N S			>	-INS,îNMES
-	I N S			>	-INS,îNTES
+	I N S			>	-INS,iNMES
+	I N S			>	-INS,iNTES
 	I N S			>	SE
 	I N S			>	SES
-	I N S			>	-INS,îNT
+	I N S			>	-INS,iNT
 	I N S			>	SIONS
 	I N S			>	SIEZ
 	I N S			>	SENT
@@ -1849,10 +1849,10 @@ flag *x:
 # Lemme = INF
 # Pour : toutes les formes du participe passé
 flag *y:
-	E R			>	-ER,é
-	E R			>	-ER,éS
-	E R			>	-ER,éE
-	E R			>	-ER,éES
+	E R			>	-ER,e
+	E R			>	-ER,eS
+	E R			>	-ER,eE
+	E R			>	-ER,eES
 
 				# V du 2e gp et certains du 3e gp
 	[^O] I R		>	-IR,I	# = -R
@@ -1861,10 +1861,10 @@ flag *y:
 	[^O] I R		>	-R,ES
 
 				# V du 3e gp sur le modèle de 'recevoir'
-	C E V O I R		>	-CEVOIR,çU
-	C E V O I R		>	-CEVOIR,çUS
-	C E V O I R		>	-CEVOIR,çUE
-	C E V O I R		>	-CEVOIR,çUES
+	C E V O I R		>	-CEVOIR,cU
+	C E V O I R		>	-CEVOIR,cUS
+	C E V O I R		>	-CEVOIR,cUE
+	C E V O I R		>	-CEVOIR,cUES
 
 				# V du 3e gp sur le modèle de 'asseoir'
 	S E O I R		>	-EOIR,IS
@@ -1908,10 +1908,10 @@ flag *y:
 
 				# V du 3e gp sur le modèle de 'connaître',
 				# et 'paraître'
-	[NR] A î T R E		>	-AîTRE,U
-	[NR] A î T R E		>	-AîTRE,US
-	[NR] A î T R E		>	-AîTRE,UE
-	[NR] A î T R E		>	-AîTRE,UES
+	[NR] A î T R E		>	-AiTRE,U
+	[NR] A î T R E		>	-AiTRE,US
+	[NR] A î T R E		>	-AiTRE,UE
+	[NR] A î T R E		>	-AiTRE,UES
 
 				# V du 3e gp sur le modèle de 'clore'
 	C L O R E		>	-RE,S
@@ -1929,13 +1929,13 @@ flag *y:
 	O I R E			>	-OIRE,UES
 
 				# 'croître' et 'recroître'
-	C R O î T R E		>	-OîTRE,û
-	C R O î T R E		>	-OîTRE,US
-	C R O î T R E		>	-OîTRE,UE
-	C R O î T R E		>	-OîTRE,UES
+	C R O î T R E		>	-OiTRE,u
+	C R O î T R E		>	-OiTRE,US
+	C R O î T R E		>	-OiTRE,UE
+	C R O î T R E		>	-OiTRE,UES
 
 				# 'haïr'
-	H A ï R			>	-ïR,ï	# = -R
+	H A ï R			>	-iR,i	# = -R
 	H A ï R			>	-R,S
 	H A ï R			>	-R,E
 	H A ï R			>	-R,ES
@@ -1953,16 +1953,16 @@ flag *y:
 	S U I V R E		>	-RE,IES
 
 				# 'vivre', 'revivre' et 'survivre'
-	V I V R E		>	-IVRE,éCU
-	V I V R E		>	-IVRE,éCUS
-	V I V R E		>	-IVRE,éCUE
-	V I V R E		>	-IVRE,éCUES
+	V I V R E		>	-IVRE,eCU
+	V I V R E		>	-IVRE,eCUS
+	V I V R E		>	-IVRE,eCUE
+	V I V R E		>	-IVRE,eCUES
 
 flag *z:
 				# V du 3e gp sur le modèle de 'acquérir'
-	é R I R			>	-éRIR,IS
-	é R I R			>	-éRIR,ISE
-	é R I R			>	-éRIR,ISES
+	é R I R			>	-eRIR,IS
+	é R I R			>	-eRIR,ISE
+	é R I R			>	-eRIR,ISES
 
 				# V du 3e gp sur le modèle de 'couvrir'
 	V R I R			>	-RIR,ERT
@@ -2008,10 +2008,10 @@ flag *z:
 	M O U D R E		>	-DRE,LUES
 
 				# V 'naître' et 'renaître'
-	N A î T R E		>	-AîTRE,é
-	N A î T R E		>	-AîTRE,éS
-	N A î T R E		>	-AîTRE,éE
-	N A î T R E		>	-AîTRE,éES
+	N A î T R E		>	-AiTRE,e
+	N A î T R E		>	-AiTRE,eS
+	N A î T R E		>	-AiTRE,eE
+	N A î T R E		>	-AiTRE,eES
 
 				# écrire/décrire et V en -SCRIRE
 	[éS] C R I R E		>	-RE,TS
@@ -2024,10 +2024,10 @@ flag *z:
 
 				# V de la famille de 'croître', sauf 'croître'
 				# et 'recroître'
-	C R O î T R E		>	-OîTRE,u
-	C R O î T R E		>	-OîTRE,us
-	C R O î T R E		>	-OîTRE,ue
-	C R O î T R E		>	-OîTRE,ues
+	C R O î T R E		>	-OiTRE,u
+	C R O î T R E		>	-OiTRE,us
+	C R O î T R E		>	-OiTRE,ue
+	C R O î T R E		>	-OiTRE,ues
 
 
 # Lemmes supplémentaires pour les emplois réflexifs de certains verbes
@@ -2041,7 +2041,7 @@ flag *z:
 
 flag  p:
 	E			>	NT
-	E			>	-E,ÈRENT
+	E			>	-E,ERENT
 	E			>	RA
 	E			>	RONT
 	E			>	RAIT
@@ -2050,11 +2050,11 @@ flag  p:
 	A I T			>	-T,ENT
 	A I T			>	-AIT,A	# = -IT
 	A I T			>	-IT,NT
-	A I T			>	-AIT,ÂT
+	A I T			>	-AIT,AT
 	A I T			>	-IT,SSENT
 
 flag  q:
-	Ï S S A I T		>	-ÏSSAIT,IT
+	Ï S S A I T		>	-iSSAIT,IT
 	[^Ï] S S A I T		>	-SSAIT,T
 	S S A I T		>	-AIT,E
 	S S A I T		>	-AIT,ENT
@@ -2062,8 +2062,8 @@ flag  q:
 	S S A I T		>	-IT,NT
 	Ï S S A I T		>	-SSAIT,T
 	S S A I T		>	-SSAIT,RENT
-	Ï S S A I T		>	-ÏSSAIT,ÎT
-	I S S A I T		>	-ISSAIT,ÎT
+	Ï S S A I T		>	-iSSAIT,iT
+	I S S A I T		>	-ISSAIT,iT
 	S S A I T		>	-SSAIT,RA
 	S S A I T		>	-SSAIT,RONT
 	S S A I T		>	-SSAIT,RAIT
