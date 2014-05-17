@@ -50,15 +50,15 @@ sub search {
 
     # warn "q is ".$param->{'q'}." filters are ".Dumper(\%filters);
 
-    my $sql = join ' ', 
-            ("select docuid, docdate, ts_headline('public.belaws_$lang',title, tsq, 'HighlightAll=TRUE') as title,",
-                "(select cat from __staatsblad_${lang}_docuid_per_cat where docuid = any(docuids)) as cat,",
-                "ts_rank_cd(fts, tsq) as rank,",
-                "'".$lang."'".' as lang',
-                "from (select docuid,docdate,title,tsq,fts",
-                        "from staatsblad_$lang, plainto_tsquery('public.belaws_$lang',?) as tsq",
-                        "where fts @@ tsq)",
-                "as result order by rank desc");
+    my $sql = qq/
+    select docuid, docdate, ts_headline('public.belaws_$lang',title, tsq, 'HighlightAll=TRUE') as title,
+        (select cat from __staatsblad_${lang}_docuid_per_cat where docuid = any(docuids)) as cat,
+        ts_rank_cd(fts, tsq) as rank,
+        '$lang' as lang
+        from (select docuid,docdate,title,tsq,fts
+                from staatsblad_$lang, plainto_tsquery('public.belaws_$lang',?) as tsq
+                where fts @@ tsq)
+        as result order by rank desc/;
 
     my $rows = $dbh->selectall_arrayref($sql, {Slice=>{}},$q);
 
@@ -73,13 +73,13 @@ sub class_person {
     my $param = $req->parameters();
     my ($lang) = ($param->{'lang'} || 'nl' =~ m/(nl|fr)/);
 
-    my $sql = join ' ', 
-            ('select name,',
-                    'count(*) as count,', 
-                    'array_agg(docuid) as docuids',
-             "from (select name, unnest(staatsblad_${lang}_docuids) as docuid from person) as foo", 
-             "where docuid in (select docuid from staatsblad_$lang where plainto_tsquery('public.belaws_$lang',?) @@ fts)",
-             'group by name order by count desc');
+    my $sql = qq/
+    select name,
+            count(*) as count,
+            array_agg(docuid) as docuids
+     from (select name, unnest(staatsblad_${lang}_docuids) as docuid from person) as foo
+     where docuid in (select docuid from staatsblad_$lang where plainto_tsquery('public.belaws_$lang',?) @@ fts)
+     group by name order by count desc/;
 
     my $rows = $dbh->selectall_arrayref($sql, {Slice=>{}},$param->{'q'});
 
@@ -94,13 +94,13 @@ sub class_cat {
     my $param = $req->parameters();
     my ($lang) = ($param->{'lang'} || 'nl' =~ m/(nl|fr)/);
 
-    my $sql = join ' ', 
-    ('select cat,',
-            'count(*) as count,',
-            'array_agg(docuid) as docuids', 
-     "from (select cat, unnest(docuids) as docuid from __staatsblad_${lang}_docuid_per_cat) as foo",
-     "where docuid in (select docuid from staatsblad_$lang where plainto_tsquery('public.belaws_$lang',?) @@ fts)",
-     'group by cat order by count desc');
+    my $sql = qq/
+    select cat,
+            count(*) as count,
+            array_agg(docuid) as docuids
+     from (select cat, unnest(docuids) as docuid from __staatsblad_${lang}_docuid_per_cat) as foo
+     where docuid in (select docuid from staatsblad_$lang where plainto_tsquery('public.belaws_$lang',?) @@ fts)
+     group by cat order by count desc/;
 
     my $rows = $dbh->selectall_arrayref($sql, {Slice=>{}},$param->{'q'});
 
@@ -115,13 +115,13 @@ sub class_geo {
     my $param = $req->parameters();
     my ($lang) = ($param->{'lang'} || 'nl' =~ m/(nl|fr)/);
 
-    my $sql = join ' ', 
-    ('select geo,',
-            'count(*) as count,',
-            'array_agg(docuid) as docuids', 
-     "from (select geo, unnest(docuids) as docuid from __staatsblad_${lang}_docuid_per_geo) as foo",
-     "where docuid in (select docuid from staatsblad_$lang where plainto_tsquery('public.belaws_$lang',?) @@ fts)",
-     'group by geo order by count desc');
+    my $sql = qq/
+    select geo,
+            count(*) as count,
+            array_agg(docuid) as docuids
+     from (select geo, unnest(docuids) as docuid from __staatsblad_${lang}_docuid_per_geo) as foo
+     where docuid in (select docuid from staatsblad_$lang where plainto_tsquery('public.belaws_$lang',?) @@ fts)
+     group by geo order by count desc/;
 
     my $rows = $dbh->selectall_arrayref($sql, {Slice=>{}},$param->{'q'});
 
@@ -166,7 +166,7 @@ sub doc {
     my $row = $dbh->selectrow_hashref("select ". join(',', keys %cols)  ." from staatsblad_$lang where docuid = ? limit 1",undef,$docuid);
 
     # format the body into a prettyfied html body TODO: cache in db
-    $row->{pretty} = BeLaws::Format::ejustice_fgov::prettify($row->{body}) if exists $cols{pretty};
+    $row->{pretty} = BeLaws::Format::ejustice_fgov::prettify($row->{body}, $lang) if exists $cols{pretty};
 
     # delete the body if it was not requested
     delete $row->{body} if $icols && $icols !~ m/body/;
@@ -284,7 +284,6 @@ sub stats_person_cosign {
 
     return [ 200, [ 'Content-Type' => 'application/json; charset=utf-8' ], [ encode_json($rows) ] ];
 }
-
 sub word_trends_per_month {
     my $env = shift;
     my $dbh = $db->get_dbh();
@@ -303,33 +302,5 @@ sub word_trends_per_month {
 
 
 
-### private/singleshot functions #############################################################################################################
 
-# sub seen_key_in_table_recently {
-    # my ($dbh, $table, $key, $id) = @_;
-    # my @row = $dbh->selectrow_array(sprintf("select * from %s where (ts - now ()) < '1d'::interval %s = ?",$table, $key), undef, $id);
-    # return scalar @row;
-# }
-
-
-sub import_law_from_dir {
-    my $dir = shift;
-
-    for my $file (<$dir/*.html>) {
-        import_law_from_file($file);
-    }
-}
-
-# sub import_law_from_file { 
-    # my $file = shift;
-    # my $dbh = $db->get_dbh();
-    # my $fgov = new BeLaws::Query::ejustice_fgov::document;
-    # my $obj = $fgov->parse_response($file, 'perl');
-    # for(qw/title docuid pubid pubdate body plain effective/) {
-        # unless ($obj->{$_}) { print "[$file] has no $_\n"; }
-    # }
-    # print "[".$obj->{docuid}."] inserting record into db with title ".$obj->{title}."\n";
-    # $dbh->do('insert into belaws_docs (title,docuid,pubid,pubdate,source,body,plain,pages,pdf_href,effective) values (?,?,?,?,?,?,?,?,?,?)', undef,
-            # @{$obj}{qw/title docuid pubid pubdate source body plain pages pdf_href effective/});
-# }
 42;

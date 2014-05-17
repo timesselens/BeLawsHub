@@ -31,8 +31,8 @@ sub fetch {#{{{
        $param->{'lang'} ||= 'nl'; # default
     my $res;
 
-    my ($docuid)    = ($param->{'docuid'} =~ m/^(\d{4}-\d{2}-\d{2}\/\d+)$/)     or throw 500, 'docuid is malformatted';
-    my ($lang)      = ($param->{'lang'} =~ m/^(nl|fr|de)$/)                     or throw 500, 'lang is malformatted';
+    my ($docuid)    = ($param->{'docuid'} || '' =~ m/^(\d{4}-\d{2}-\d{2}\/\d+)$/)     or throw 500, 'docuid is malformatted';
+    my ($lang)      = ($param->{'lang'} || '' =~ m/^(nl|fr|de)$/)                     or throw 500, 'lang is malformatted';
 
     my $drv = new BeLaws::Driver::LWP;
     my $httpreq = BeLaws::Query::ejustice_fgov::document->new(language => $lang)->make_request(cn => $docuid); 
@@ -53,6 +53,7 @@ sub fetch {#{{{
             "http://".$env->{HTTP_HOST}."/api/internal/info/staatsblad.json?docuid=$docuid&lang=$lang" ],
     };
 
+    return [ 404, [ 'Content-Type' => 'text/plain' ], [ 'scrape returned empty document' ] ] if $cont =~ m@<BODY background = /img_l/fond5.jpg text=black alink=blue vlink=blue>$@;
     eval { $dbh->do('insert into incoming (parser, uid, lang, body) values (?, ?, ?, ?)',undef,'BeLaws::Query::ejustice_fgov', $docuid, $lang, $cont) };
 
     if ($@) {
@@ -69,6 +70,18 @@ sub fetch {#{{{
 
     return [ $result->{status_code}, [ 'Content-Type' => 'application/json' ], [ encode_json($result) ] ];
 };#}}}
+
+sub retry {
+    my $env = shift;
+
+    my $res = fetch($env);
+    return [ 404, [ 'Content-Type' => 'text/plain' ], [ 'sorry, unable to fetch document' ] ] unless $res->[0] == 200;
+    my $res2 = resolve($env);
+    my $res3 = parse($env);
+    return [ 404, [ 'Content-Type' => 'text/plain' ], [ 'sorry, unable to parse document' ] ] unless $res3->[0] == 200;
+
+    return [ 200, [ 'Content-Type' => 'text/html' ], [ 'Success! This document is now in our db, try the back button in your browser' ] ];
+}
 
 sub resolve {#{{{
     my $env = shift;
@@ -190,7 +203,7 @@ sub parse {#{{{
     $result->{diff} = \%diff;
 
     if(not %diff) {
-        $result->{message} = 'document parser gave identical results, disgarding...';
+        $result->{message} = 'document parser gave identical results, discarding...';
         return [ 200, [ 'Content-Type' => 'application/json; charset=utf-8' ], [ encode_json($result) ] ];
     };
 
@@ -227,7 +240,7 @@ sub format {#{{{
     my $row = $dbh->selectrow_hashref('select body from staatsblad_'.$lang.' where docuid = ?', {Slice=>{}} , $docuid)
                                         or throw 500, 'unable to get body doc from db, try parsing first';
 
-    my $result = BeLaws::Format::ejustice_fgov::prettify($row->{body});
+    my $result = BeLaws::Format::ejustice_fgov::prettify($row->{body},$lang);
 
     return [ 200, [ 'Content-Type' => 'text/html; charset=utf-8' ], [ encode('utf8',$result) ] ];
     # return [ 200, [ 'Content-Type' => 'application/json' ], [ encode_json({ docuid => $docuid, lang => $lang, html => $result }) ] ];
@@ -253,6 +266,23 @@ sub info {#{{{
 
     return [ 200, [ 'Content-Type' => 'application/json' ], [ encode_json($info) ] ];
 };#}}}
+
+sub top {
+    my $env = shift;
+    my $dbh = $db->get_dbh();
+
+    my $req = new Plack::Request($env);
+    my $param = $req->parameters();
+       $param->{'lang'} ||= 'nl'; # default
+    my $res;
+
+    my ($lang)      = ($param->{'lang'} =~ m/^(nl|fr|de)$/)                     or throw 500, 'lang is malformatted';
+
+    my $top = $dbh->selectall_arrayref("select docuid,count,title from __staatsblad_${lang}_docuid_in_body left join staatsblad_$lang using (docuid) limit 100;",{Slice=>{}});
+
+    return [ 200, [ 'Content-Type' => 'application/json' ], [ encode_json($top) ] ];
+
+}
 
 sub test {#{{{
     my $env = shift;
@@ -316,14 +346,14 @@ sub stat {#{{{
     {
         categories =>  $dbh->selectall_hashref("select count,cat $and_maybe_docuids from __staatsblad_nl_docuid_per_cat", 'cat'),
         persons => $dbh->selectall_hashref("select name,count $and_maybe_docuids from (select name,array_length(staatsblad_nl_ids,1) as count, staatsblad_nl_docuids as docuids from person) as foo",'name'),
-        sources => $dbh->selectall_hashref("select count,source $and_maybe_docuids from _staatsblad_nl_source",'source'),
+        # sources => $dbh->selectall_hashref("select count,source $and_maybe_docuids from _staatsblad_nl_source",'source'),
         namedrefs => $dbh->selectall_hashref("select count,named,cat $and_maybe_docuids from _staatsblad_nl_named",'named')
     } 
     :
     {
         categories =>  $dbh->selectall_arrayref("select count,cat $and_maybe_docuids from __staatsblad_nl_docuid_per_cat", {Slice=>{}}),
         persons => $dbh->selectall_arrayref("select name,count $and_maybe_docuids from (select name,array_length(staatsblad_nl_ids,1) as count, staatsblad_nl_docuids as docuids from person) as foo",{Slice=>{}}),
-        sources => $dbh->selectall_arrayref("select count,source $and_maybe_docuids from _staatsblad_nl_source",{Slice=>{}}),
+        # sources => $dbh->selectall_arrayref("select count,source $and_maybe_docuids from _staatsblad_nl_source",{Slice=>{}}),
         namedrefs => $dbh->selectall_arrayref("select count,named,cat $and_maybe_docuids from _staatsblad_nl_named",{Slice=>{}})
     };
     return [ 200, [ 'Content-Type' => 'application/json' ], [ encode_json($stat) ] ];

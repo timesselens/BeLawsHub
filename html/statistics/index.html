@@ -18,13 +18,18 @@
   <meta name="version" content="v0.03" />
   <meta name="keywords" lang="nl" content="wet, opzoeken, belgisch, staatsblad, wetgeving, irail, belaws, koninklijk besluit" />
   <meta name="description" content="BeLaws is een web 2.0 interface naar het Belgische staatsblad" lang="nl" />
-  <script src="/vendor/jquery-1.6.1.min.js" type="text/javascript" charset="utf-8"></script>
+  <script src="/app/bower_components/jquery/dist/jquery.min.js" type="text/javascript" charset="utf-8"></script>
   <script src="/vendor/jquery-ui-1.8.7.js" charset="utf-8"></script>
   <script src="/vendor/jquery.layout-1.3.0-rc29.14.js" charset="utf-8"></script>
   <script src="/js/script.js" charset="utf-8"></script>
   <script>$(function() { belaws.menu.init() });</script>
 </head>
 <body>
+  <style>
+      table.top td { padding: 0 1em; line-height: 150%;}
+      table.top tr:nth-child(odd) td { background: #e3e3e3; }
+
+  </style>
 <div class="linkmenu" style="display:none">
     <ul class="links">
         <li class=""><span><a href="/index.html">Home<span>The homescreen of belaws</span></a></span></li>
@@ -38,9 +43,30 @@
     <h1 class="dropdown">BeLawsHub<span style="text-shadow: none; margin-left: 1em; font-size: 0.5em;">▼</span></h1>
 <div style="clear:both"></div>
 
+<script>
+    $.get('/api/top.json', function(data) {
+        var lang = 'nl';
+        var html = $.map(data,function(o,i) {
+            return [
+                '<tr>',
+                    '<td style="width: 6em;"><a href=/',lang,'/',o.docuid,'>',o.docuid,'</a></td>',
+                    '<td>',o.count,'</td>',
+                    '<td>',o.title,'</td>',
+                '</tr>'
+            ].join('');
+        });
+        $('table.top').append(html);
+    });
+</script>
+
+
   <section id="page">
   <iframe src="stats.html" style="width: 1290px; height: 720px; overflow: hidden;">
   </iframe>
+  </section>
+  <section>
+  <h3>Top Referrals</h3>
+    <table class="top"> </table>
   </section>
 </body>
 </html>

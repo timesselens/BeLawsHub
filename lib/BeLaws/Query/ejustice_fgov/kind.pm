@@ -79,7 +79,7 @@ sub make_request {
               $self->{url} . 
               '?'. join '&', (map { $_.'='.$self->{params}->{$_} } @params);
         
-    warn "requesting ".$attr{dt}." $y $m $d $url ";
+    # warn "requesting ".$attr{dt}." $y $m $d $url ";
     my $req = new HTTP::Request(GET => $url);
 
     return $req;
@@ -98,7 +98,7 @@ sub parse_response {
         count => $aantal,
     };
 
-    warn Dumper($obj);
+    # warn Dumper($obj);
 
     for ($dataType) {
         /html/i and return $html;

@@ -26,7 +26,7 @@ sub new {
     $self->{params} = {
         caller      => 'list',
         la          => $lang,
-        sql         => "dt+not+contains+'foo'",
+        sql         => "dt+not+contains+'uniquestringwhichisnotfoo'",
         language    => $lang eq 'N' ? 'nl' : 'fr', 
         chercher    => 't',
         fromtab     => $lang eq 'N' ? 'wet_all' : 'loi'
@@ -61,7 +61,6 @@ sub parse_response {
                 $in !~ m/\n/ && -e $in ? slurp($in) :
                 $in;    
 
-    warn $html;
     return { error => 404, msg => 'remote side sais document not found' } if ($html =~ m#No article available with such references#);
 
     my ($dossiernr) = ($html =~ m#<font color=Red>\s*<b>\s*(?:Dossiernummer|Dossier num&eacute;ro)\s*:\s*</b>\s*</font>\s*([^<]+)\s*#smio);
@@ -88,7 +87,7 @@ sub parse_response {
     # cleanup 
     $title =~ s/[\r\n]*//g;
     
-    # just for fun: (jan|feb|maart|april|mei|jun|jul|aug|sept|okt|nov)(uar|ustus|o|em)(i|ber)
+    # just for fun: (jan|feb|maart|april|mei|jun|jul|aug|sept|okt|nov)(uar|ustus|o|em|)(i|ber) :-| you see the git change? better type it full
     $title =~ s/^\s*\d+\s*(januari|februari|maart|april|mei|juni|juli|augustus|september|oktober|novemeber|december)\s*\d+\.?\s*\-?\s*//i;
     $title =~ s/^\s*\d+\s*(janvier|f?vrier|mars|avril|mai|juin|juillet|ao?t|septembre|octobre|novemebre|decembre)\s*\d+\.?\s*\-?\s*//i;
     $num =~ s/&nbsp;//g;

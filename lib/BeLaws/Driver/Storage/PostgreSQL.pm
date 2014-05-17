@@ -5,8 +5,8 @@ use Carp qw/croak/;
 use base 'Exporter';
 use base 'BeLaws::Driver::Storage';
 
-my $config; eval { $config = do "./config.pl" }; if($@) { die $@."\n".$! }
-our $db = BeLaws::Driver::Storage::PostgreSQL->new( { user => $config->{dbi_user}, host => $config->{dbi_host}, port => $config->{dbi_port} } );
+my $config; if(-e './config.pl') { eval { $config = do "./config.pl" }; if($@) { die $@."\n".$! } } 
+our $db = BeLaws::Driver::Storage::PostgreSQL->new( { user => $config->{dbi_user} || $ENV{PGUSER}, host => $config->{dbi_host} || $ENV{PGHOST}, port => $config->{dbi_port} || $ENV{PGPORT} || 5432 } );
 our @EXPORT = qw/$db/;
 
 sub new {

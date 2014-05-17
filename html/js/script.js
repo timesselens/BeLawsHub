@@ -133,7 +133,7 @@ var belaws = (function($) {
                             '</dl>',
                             '<ul class="actions">',
                                 '<li><span class="viewsource"><a href="#">view source</a></span>',
-                                '<li><span class="doclink"><a target="_blank" href="/doc.html?d=',doc.docuid,'&lang=',lang,'">open in tab</a><span></li>',
+                                '<li><span class="doclink"><a target="_blank" href="/',(lang || 'nl'),'/',doc.docuid,'/','">open in tab</a><span></li>',
                             '</ul>',
                           '</div>',
                           '<div style="clear:both"></div>',
