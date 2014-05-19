@@ -31,9 +31,7 @@ sub call {
     # append 'index.phtml' when path ends in '/'
     if($path =~ m/\/$/) { $path .= 'index.phtml' }
 
-    warn "not performing templating on '$path' without .phtml extention or \$env{webhive.template.force}=1" 
-        and return $self->response_cb($res, sub { return shift }) 
-            unless ($env->{'webhive.template.force'} || $path =~ m/\.phtml$/);
+    return $self->response_cb($res, sub { return shift }) unless ($env->{'webhive.template.force'} || $path =~ m/\.phtml$/);
 
     # extract dir and filename from the $path
     my ($uridir,$template) = ($path =~ m/^([\w\d\-\_\/\.]*)\/([^\/]+\.\w+)$/ );

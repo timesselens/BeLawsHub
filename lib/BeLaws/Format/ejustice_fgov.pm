@@ -75,7 +75,7 @@ sub prettify {
         $finaltext .= '</p>' if $paropen;
         $finaltext = "<p>$finaltext</p>" if not $paropen;
 
-        return "\n<section id=\"$id\"><span class=\"art\"><a name=\"$anchor\" href=\"#$anchor\">Art $art</a></span>$finaltext</section>\n";
+        return "\n<section id=\"$id\"><span class=\"art\"><a name=\"$anchor\" href=\"./$id\">Art $art</a></span>$finaltext</section>\n";
     }
 
     $text =~ s@<a(?: href="[^"]+")? name="(Ar[^"]+)">[^<]+</a>\s*(?:<a\s*href="[^"]+">([^<]+)</a>)?(.*?)(?=(?:$|Brussel, \d+|<br /><br />[\s\t]*<a href="#L|<a href="#\1" name="[^"]+">))@to_article($1,$2,$3)@gie;
@@ -94,7 +94,6 @@ sub prettify {
            $class =~ s/^w$/wet/gio;
 
            $type =~ s/^w$/Wet/gio;
-           warn "/$lang/$docuid#Art.$ref";
 
         return "<span class=\"ref\"><span class=\"$class\">&laquo;</span><span class=\"type\">$type</span> <a title=\"inwerkingstreding $start\" href=\"/$lang/$docuid#Art.$ref\">$docuid#Art.$ref</a><span class=\"start\">Inwerkingtreding: $start</span><span class=\"$class\">&raquo;</span></span>";
     }

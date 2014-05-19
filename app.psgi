@@ -134,6 +134,9 @@ our $app = builder {
             namespace 'BeLaws';
             get '/{lang}/{year}/{no}' => { controller => 'Frontend', action => 'saved_doc' },
             get '/{lang}/{year}/{no}/' => { controller => 'Frontend', action => 'saved_doc' },
+            get '/{lang}/{year}/{no}/{art}' => { controller => 'Frontend', action => 'saved_art_doc' },
+            get '/oembed/{lang}/{year}/{no}' => { controller => 'Frontend', action => 'oembed' },
+            get '/oembed/{lang}/{year}/{no}/{art}' => { controller => 'Frontend', action => 'oembed' },
             get '/doc.html' => { controller => 'Frontend', action => 'doc' },
             get "/" => { controller => 'Frontend', action => 'index' },
             get "/index.phtml" => { controller => 'Frontend', action => 'index' },
