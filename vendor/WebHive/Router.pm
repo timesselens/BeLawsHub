@@ -68,6 +68,7 @@ sub get {
         $dotroutes->{'GET.'.$from} = $name; 
     } else {
         $_ROUTERS->{$from}->connect($name,$pattern, $hash, { method => "GET" });
+        $_ROUTERS->{$from}->connect($name,$pattern, $hash, { method => "HEAD" });
     }
 }
 
