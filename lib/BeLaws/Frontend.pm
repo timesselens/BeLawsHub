@@ -151,6 +151,8 @@ sub saved_doc {
     # my ($title) = (($env->{route}->{title} || '') =~ m/^([\w\-]*)$/);
     my ($lang) = (($env->{route}->{lang} || 'nl') =~ m/(nl|fr)/);
     my $docuid = "$year/$no";
+       
+    return [ 302, [ 'Content-Type' => 'text/plain', 'Location' => '/'.$lang.'/'.$year.'/'.$no.'/' ], ['redirecting'] ] unless $env->{REQUEST_URI} =~ m/\/$/;
 
     $year =~ s/(\d{4}).?(\d{2}).?(\d{2})/$1-$2-$3/;
 
