@@ -80,7 +80,7 @@ sub retry {
     my $res3 = parse($env);
     return [ 404, [ 'Content-Type' => 'text/plain' ], [ 'sorry, unable to parse document' ] ] unless $res3->[0] == 200;
 
-    return [ 200, [ 'Content-Type' => 'text/html' ], [ 'Success! This document is now in our db, try the back button in your browser' ] ];
+    return [ 200, [ 'Content-Type' => 'text/html' ], [ 'Success! This document is now in our db, try back and reload in your browser' ] ];
 }
 
 sub resolve {#{{{
@@ -240,7 +240,7 @@ sub format {#{{{
     my $row = $dbh->selectrow_hashref('select body from staatsblad_'.$lang.' where docuid = ?', {Slice=>{}} , $docuid)
                                         or throw 500, 'unable to get body doc from db, try parsing first';
 
-    my $result = BeLaws::Format::ejustice_fgov::prettify($row->{body},$lang);
+    my $result = BeLaws::Format::ejustice_fgov::prettify($row->{body},$lang,$docuid);
 
     return [ 200, [ 'Content-Type' => 'text/html; charset=utf-8' ], [ encode('utf8',$result) ] ];
     # return [ 200, [ 'Content-Type' => 'application/json' ], [ encode_json({ docuid => $docuid, lang => $lang, html => $result }) ] ];

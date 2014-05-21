@@ -11,6 +11,7 @@ use Encode;
 sub prettify {
     my $html = shift;
     my ($lang) = (shift =~ m/^(nl|fr)$/);
+    my ($docuid) = (shift =~ m/^(\d{4}-\d{2}-\d{2}\/\d{2})$/);
     $lang ||= 'nl';
 
     # fix invalid comma in td
@@ -47,7 +48,7 @@ sub prettify {
 
     # try and replace references to internal article references
     sub to_article {
-        my ($id, $art, $text) = @_;
+        my ($id, $art, $text, $lang,$docuid) = @_;
         my $anchor = $id;
         $id =~ s/^\s|\s$//go;
         $id =~ s/\W/_/go;
@@ -75,10 +76,10 @@ sub prettify {
         $finaltext .= '</p>' if $paropen;
         $finaltext = "<p>$finaltext</p>" if not $paropen;
 
-        return "\n<section id=\"$id\"><span class=\"art\"><a name=\"$anchor\" href=\"./$id\">Art $art</a></span>$finaltext</section>\n";
+        return "\n<section id=\"$id\"><span class=\"art\"><a name=\"$anchor\" href=\"/$lang/$docuid/$id\">Art $art</a></span>$finaltext</section>\n";
     }
 
-    $text =~ s@<a(?: href="[^"]+")? name="(Ar[^"]+)">[^<]+</a>\s*(?:<a\s*href="[^"]+">([^<]+)</a>)?(.*?)(?=(?:$|Brussel, \d+|<br /><br />[\s\t]*<a href="#L|<a href="#\1" name="[^"]+">))@to_article($1,$2,$3)@gie;
+    $text =~ s@<a(?: href="[^"]+")? name="(Ar[^"]+)">[^<]+</a>\s*(?:<a\s*href="[^"]+">([^<]+)</a>)?(.*?)(?=(?:$|Brussel, \d+|<br /><br />[\s\t]*<a href="#L|<a href="#\1" name="[^"]+">))@to_article($1,$2,$3,$lang,$docuid)@gie;
     $text =~ s@<a href="[^"]+" name="([^"]+)">([^<]+)\.?</a>\s*_?\s*(.*?)<br \/><br \/>@<h1><a name="$1" href="#$1">$2</a> $3</h1>@gi;
 
     $text =~ s@<a href="/cgi_loi/change_lg\.pl\?language=(nl|fr)&amp;la=N&amp;table_name=wet&amp;cn=(\d{4})(\d{2})(\d{2})(\d{2})"@<a href="/$1/$2-$3-$4/$5/"@g;

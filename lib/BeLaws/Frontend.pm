@@ -50,7 +50,7 @@ sub doc {
 
     return [ 404, [ 'Content-Type' => 'text/html' ], [$notfound]] unless $row->{body};
 
-    my $result = BeLaws::Format::ejustice_fgov::prettify($row->{body},$lang);
+    my $result = BeLaws::Format::ejustice_fgov::prettify($row->{body},$lang, $docuid);
     my $html_title = encode_entities($row->{title});
     $result = qq|<!DOCTYPE html>
         <html>
@@ -77,6 +77,7 @@ sub saved_art_doc {
     if(-e "./static/$lang/$year/$no/$art.html") {
         return [ 200, [ 'Content-Type' => 'text/html; charset=UTF-8' ], [ slurp("./static/$lang/$year/$no/$art.html") ] ];
     } else {
+        $env->{NOREDIR} = 1;
         my $res = saved_doc($env);
         if($res->[0] == 200) {
             my $doc = join "\n", @{$res->[2]};
@@ -152,7 +153,7 @@ sub saved_doc {
     my ($lang) = (($env->{route}->{lang} || 'nl') =~ m/(nl|fr)/);
     my $docuid = "$year/$no";
        
-    return [ 302, [ 'Content-Type' => 'text/plain', 'Location' => '/'.$lang.'/'.$year.'/'.$no.'/' ], ['redirecting'] ] unless $env->{REQUEST_URI} =~ m/\/$/;
+    return [ 302, [ 'Content-Type' => 'text/plain', 'Location' => '/'.$lang.'/'.$year.'/'.$no.'/' ], ['redirecting'] ] unless $env->{REQUEST_URI} =~ m/\/$/ || $env->{NOREDIR};
 
     $year =~ s/(\d{4}).?(\d{2}).?(\d{2})/$1-$2-$3/;
 
@@ -188,7 +189,7 @@ sub saved_doc {
     if(-e "./static/$lang/$year/$no/doc.html") {
         return [ 200, [ 'Content-Type' => 'text/html; charset=UTF-8' ], [ slurp("./static/$lang/$year/$no/doc.html") ] ];
     } else {
-        my $result = BeLaws::Format::ejustice_fgov::prettify($row->{body},$lang);
+        my $result = BeLaws::Format::ejustice_fgov::prettify($row->{body},$lang, "$year/$no");
         my $html_title = encode_entities(decode_entities($row->{title}));
         $result = qq|<!DOCTYPE html>
             <html>

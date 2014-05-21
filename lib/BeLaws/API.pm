@@ -166,7 +166,7 @@ sub doc {
     my $row = $dbh->selectrow_hashref("select ". join(',', keys %cols)  ." from staatsblad_$lang where docuid = ? limit 1",undef,$docuid);
 
     # format the body into a prettyfied html body TODO: cache in db
-    $row->{pretty} = BeLaws::Format::ejustice_fgov::prettify($row->{body}, $lang) if exists $cols{pretty};
+    $row->{pretty} = BeLaws::Format::ejustice_fgov::prettify($row->{body}, $lang, $docuid) if exists $cols{pretty};
 
     # delete the body if it was not requested
     delete $row->{body} if $icols && $icols !~ m/body/;
