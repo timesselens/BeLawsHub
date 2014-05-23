@@ -26,7 +26,7 @@ sub doc {
     my $req = new Plack::Request($env);
     my $param = $req->parameters();
 
-    my ($docuid) = ($param->{d} =~ m#^(\d{4}-\d{2}-\d{2}/\d{2})$#) or return [ 500, [ 'Content-Type' => 'text/plain' ], [ 'illegal docuid' ] ];
+    my ($docuid) = ($param->{d} =~ m#^(\d{4}-\d{2}-\d{2}/[0-9a-z]{2})$#i) or return [ 500, [ 'Content-Type' => 'text/plain' ], [ 'illegal docuid' ] ];
     my ($lang) = ($param->{'lang'} || 'nl' =~ m/(nl|fr)/);
 
    
@@ -70,7 +70,7 @@ sub doc {
 sub saved_art_doc {
     my $env = shift;
     my ($year) = ($env->{route}->{year} =~ m/^(\d{4}.?\d{2}.?\d{2})$/);
-    my ($no) = ($env->{route}->{no} =~ m/^(\d{2})$/);
+    my ($no) = ($env->{route}->{no} =~ m/^([0-9a-z]{2})$/i);
     my ($art) = map { lc $_ } (($env->{route}->{art} || '') =~ m/^([a-z0-9\_\-]*)$/i);
     my ($lang) = (($env->{route}->{lang} || 'nl') =~ m/(nl|fr)/);
 
@@ -106,7 +106,7 @@ sub oembed {
     my $env = shift;
     my $dbh = $db->get_dbh();
     my ($year) = ($env->{route}->{year} =~ m/^(\d{4}.?\d{2}.?\d{2})$/);
-    my ($no) = ($env->{route}->{no} =~ m/^(\d{2})$/);
+    my ($no) = ($env->{route}->{no} =~ m/^([0-9a-z]{2})$/i);
     my ($art) = map { lc $_ } (($env->{route}->{art} || '') =~ m/^([a-z0-9\_\-]*)$/i);
     my ($lang) = (($env->{route}->{lang} || 'nl') =~ m/(nl|fr)/);
     my $docuid = "$year/$no";
@@ -148,7 +148,7 @@ sub saved_doc {
     my $dbh = $db->get_dbh();
 
     my ($year) = ($env->{route}->{year} =~ m/^(\d{4}.?\d{2}.?\d{2})$/);
-    my ($no) = ($env->{route}->{no} =~ m/^(\d{2})$/);
+    my ($no) = ($env->{route}->{no} =~ m/^([0-9a-z]{2})$/i);
     # my ($title) = (($env->{route}->{title} || '') =~ m/^([\w\-]*)$/);
     my ($lang) = (($env->{route}->{lang} || 'nl') =~ m/(nl|fr)/);
     my $docuid = "$year/$no";

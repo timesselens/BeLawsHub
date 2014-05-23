@@ -31,7 +31,7 @@ sub fetch {#{{{
        $param->{'lang'} ||= 'nl'; # default
     my $res;
 
-    my ($docuid)    = ($param->{'docuid'} || '' =~ m/^(\d{4}-\d{2}-\d{2}\/\d+)$/)     or throw 500, 'docuid is malformatted';
+    my ($docuid)    = ($param->{'docuid'} || '' =~ m/^(\d{4}-\d{2}-\d{2}\/[a-z0-9]{2})$/i)     or throw 500, 'docuid is malformatted';
     my ($lang)      = ($param->{'lang'} || '' =~ m/^(nl|fr|de)$/)                     or throw 500, 'lang is malformatted';
 
     my $drv = new BeLaws::Driver::LWP;
@@ -92,7 +92,7 @@ sub resolve {#{{{
        $param->{'lang'} ||= 'nl'; # default
     my $res;
 
-    my ($docuid)    = ($param->{'docuid'} =~ m/^(\d{4}-\d{2}-\d{2}\/\d+)$/)     or throw 500, 'docuid is malformatted';
+    my ($docuid)    = ($param->{'docuid'} =~ m/^(\d{4}-\d{2}-\d{2}\/[0-9a-z]{2})$/i)     or throw 500, 'docuid is malformatted';
     my ($lang)      = ($param->{'lang'} =~ m/^(nl|fr|de)$/)                     or throw 500, 'lang is malformatted';
 
     my $drv = new BeLaws::Driver::LWP;
@@ -168,7 +168,7 @@ sub parse {#{{{
 
     # redefine throw
 
-    my ($docuid)    = ($param->{'docuid'} =~ m/^(\d{4}-\d{2}-\d{2}\/\d+)$/)     or throw 500, 'docuid is malformatted';
+    my ($docuid)    = ($param->{'docuid'} =~ m/^(\d{4}-\d{2}-\d{2}\/[0-9a-z]{2})$/i)     or throw 500, 'docuid is malformatted';
     my ($lang)      = ($param->{'lang'} =~ m/^(nl|fr|de)$/)                     or throw 500, 'lang is malformatted';
 
 
@@ -233,7 +233,7 @@ sub format {#{{{
        $param->{'lang'} ||= 'nl'; # default
     my $res;
 
-    my ($docuid)    = ($param->{'docuid'} =~ m/^(\d{4}-\d{2}-\d{2}\/\d+)$/)     or throw 500, 'docuid is malformatted';
+    my ($docuid)    = ($param->{'docuid'} =~ m/^(\d{4}-\d{2}-\d{2}\/[0-9a-z]{2})$/i)     or throw 500, 'docuid is malformatted';
     my ($lang)      = ($param->{'lang'} =~ m/^(nl|fr|de)$/)                     or throw 500, 'lang is malformatted';
 
 
@@ -255,7 +255,7 @@ sub info {#{{{
        $param->{'lang'} ||= 'nl'; # default
     my $res;
 
-    my ($docuid)    = ($param->{'docuid'} =~ m/^(\d{4}-\d{2}-\d{2}\/\d+)$/)     or throw 500, 'docuid is malformatted';
+    my ($docuid)    = ($param->{'docuid'} =~ m/^(\d{4}-\d{2}-\d{2}\/[0-9a-z]{2})$/i)     or throw 500, 'docuid is malformatted';
     my ($lang)      = ($param->{'lang'} =~ m/^(nl|fr|de)$/)                     or throw 500, 'lang is malformatted';
 
     my $info = {
@@ -293,7 +293,7 @@ sub test {#{{{
         $param->{'lang'} ||= 'nl'; # default
     my $res;
 
-    my ($docuid)    = ($param->{'docuid'} =~ m/^(\d{4}-\d{2}-\d{2}\/\d+)$/)     or throw 500, 'docuid is malformatted';
+    my ($docuid)    = ($param->{'docuid'} =~ m/^(\d{4}-\d{2}-\d{2}\/[0-9a-z]{2})$/i)     or throw 500, 'docuid is malformatted';
     my ($lang)      = ($param->{'lang'} =~ m/^(nl|fr|de)$/)                     or throw 500, 'lang is malformatted';
 
     # setup Test::Builder for test cases in persistent env

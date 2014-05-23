@@ -41,7 +41,7 @@ sub make_request {
 
     croak 'cn is a required argument' unless defined $attr{cn};
     $attr{cn} =~ s/\W//gio; # convert 2010-13-03/23 into 2010031323
-    croak 'cn is malformed' unless $attr{cn} =~ m/^\d+$/;
+    croak 'cn is malformed' unless $attr{cn} =~ m/^[0-9a-z]+$/i;
 
     my $url = $self->{base} .
               $self->{url} . 

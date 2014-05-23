@@ -63,9 +63,9 @@ sub make_request {
 
     croak 'cn is a required argument' unless defined $attr{cn};
     $attr{cn} =~ s/\W//gio; # convert 2010-13-03/23 into 2010031323
-    croak 'cn is malformed' unless $attr{cn} =~ m/^\d+$/;
+    croak 'cn is malformed' unless $attr{cn} =~ m/^[0-9a-z]+$/i;
 
-    my ($y,$m,$d,$num) = ($attr{cn} =~ m/^(\d{4})(\d{2})(\d{2})(\d{2})/);
+    my ($y,$m,$d,$num) = ($attr{cn} =~ m/^(\d{4})(\d{2})(\d{2})([0-9a-z]{2})/);
 
     croak 'dt is a required argument' unless defined $attr{dt};
     croak 'dt is malformed' unless $attr{dt} =~ m/^[0-9a-z\ \(\)\-\,]+$/i;
